@@ -1720,9 +1720,9 @@ module nft_war::wolf_witch {
         let mutability_config = &vector<bool>[ false, true, true, true, true ];                    
         if(is_hero) {          
             uri = token::get_tokendata_uri(creator,token_data_id_1);
-            token_description = get_tokendata_description(token_data_id_1);
+            token_description = token::get_tokendata_description(token_data_id_1);
             let (_,_,token_name_new,_) = token::get_token_id_fields(&token_id_1);
-            token_name = token_name_new
+            token_name = token_name_new;
         };
         let token_data_id = token::create_tokendata(
                 &resource_signer,
