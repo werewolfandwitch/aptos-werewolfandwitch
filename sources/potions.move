@@ -21,6 +21,7 @@ module nft_war::potion {
     const POTION_A: vector<u8> = b"POTION A"; // 6 
     const POTION_B: vector<u8> = b"POTION B"; // 8
     const POTION_C: vector<u8> = b"POTION C"; // 10    
+    const POTION_D: vector<u8> = b"POTION D"; // 6    
     
     public entry fun create_potion_collection<CoinType> (
         sender: &signer,        
