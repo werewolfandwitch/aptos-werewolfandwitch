@@ -98,6 +98,8 @@ module nft_war::wolf_witch {
     const POTION_A: vector<u8> = b"POTION A"; // 6 
     const POTION_B: vector<u8> = b"POTION B"; // 8
     const POTION_C: vector<u8> = b"POTION C"; // 10
+    const POTION_D: vector<u8> = b"POTION D"; // Dungeon posion
+
     const LAND_A: vector<u8> = b"Castle Ruins";
     const LAND_B: vector<u8> = b"Dark Forest";
     const LAND_C: vector<u8> = b"Sacred Grove";
@@ -1540,7 +1542,7 @@ module nft_war::wolf_witch {
         assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));
 
         let items = vector<String>[
-            string::utf8(POTION_A),string::utf8(POTION_B), string::utf8(POTION_C)
+            string::utf8(POTION_A),string::utf8(POTION_B), string::utf8(POTION_C), string::utf8(POTION_D)
          ];
         let game_events = borrow_global_mut<GameEvents>(game_address);                
         let selected_item;        
@@ -1883,7 +1885,7 @@ module nft_war::wolf_witch {
                 coin::deposit(sender_addr, coins);                
                 if(prize_war < 3) {                    
                     let creator_potion = @item_now_creator;                    
-                    let token_id_1 = token::create_token_id_raw(creator_potion, string::utf8(POTION_COLLECTION_NAME), string::utf8(POTION_A), 0); 
+                    let token_id_1 = token::create_token_id_raw(creator_potion, string::utf8(POTION_COLLECTION_NAME), string::utf8(POTION_D), 0); 
                     let token = token::withdraw_token(&resource_signer, token_id_1, 1);
                     token::deposit_token(sender, token);
                 };
