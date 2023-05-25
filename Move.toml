@@ -1,0 +1,23 @@
+[package]
+name = "wolf_witch"
+version = "0.0.1"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir="aptos-move/framework/aptos-framework/", rev="mainnet" }
+AptosStdlib = { git = "https://github.com/aptos-labs/aptos-core.git", subdir="aptos-move/framework/aptos-stdlib/", rev="mainnet" }
+AptosToken = { git = "https://github.com/aptos-labs/aptos-core.git", subdir="aptos-move/framework/aptos-token/", rev="mainnet" }
+
+[addresses]
+nft_war ="_"
+war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
+aptos_coin="0x1"
+season_pre_creator="0x92e00bccf40c70d701d60830b91aaed4bd52dae9dc2833271261af06a13d38d5"
+season_now_creator="0x3639a0d151282e6665d81237a33f51c2372d3b4078a85475328102fcd4641e1"
+item_pre_creator="0x3639a0d151282e6665d81237a33f51c2372d3b4078a85475328102fcd4641e1"
+item_now_creator="0x3639a0d151282e6665d81237a33f51c2372d3b4078a85475328102fcd4641e1"
+aptos_framework="0x1"
+aptos_std="0x1"
+aptos_token="0x3"
+std="0x1"
+[dev-addresses]
+war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
