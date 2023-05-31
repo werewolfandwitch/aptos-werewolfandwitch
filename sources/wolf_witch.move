@@ -216,7 +216,7 @@ module nft_war::wolf_witch {
     }    
 
     struct CreateGameEvent has drop, store {        
-        collection_id: CollectionId,
+        minimum_elapsed_time: u64,
     }
 
     struct FighterChangeEvent has drop, store {
@@ -285,6 +285,7 @@ module nft_war::wolf_witch {
         bet: u64,
         owner: address,
     }
+
     struct DeListFighterEvent has drop, store {
         timestamp: u64,
         token_id:token::TokenId,        
@@ -418,14 +419,14 @@ module nft_war::wolf_witch {
     }     
     
     entry fun init_game<CoinType>(sender: &signer,
-        _minimum_elapsed_time:u64, token_url: String,
+        minimum_elapsed_time:u64, token_url: String,
         token_description:String, royalty_points_numerator:u64, presale_mint_start_timestamp:u64, public_mint_start_timestamp:u64,
         init_wolf:u64,init_witch:u64,init_total_prize:u64, init_total_nft_count:u64,
         ) acquires GameEvents {
         let sender_addr = signer::address_of(sender);                
         let (resource_signer, signer_cap) = account::create_resource_account(sender, x"01");    
         token::initialize_token_store(&resource_signer);                
-        let time_to_end = timestamp::now_seconds() + _minimum_elapsed_time;
+        let time_to_end = timestamp::now_seconds() + minimum_elapsed_time;
 
         if(!exists<WarGame>(sender_addr)){            
             move_to(sender, WarGame {                
@@ -508,6 +509,9 @@ module nft_war::wolf_witch {
             total_prize: init_total_prize,
             total_nft_count:init_total_nft_count,
         }); 
+        event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
+            minimum_elapsed_time: time_to_end,            
+        });        
     }        
 
     // create a collection minter for game 
@@ -1460,7 +1464,7 @@ module nft_war::wolf_witch {
 
     entry fun add_whitelist<CoinType>(creator: &signer, game_address:address, whitelists:vector<address>, whitelists_limit:vector<u64>) acquires WhiteList,GameEvents {
         assert!(vector::length(&whitelists) == vector::length(&whitelists_limit), error::permission_denied(ENO_NOT_EQUAL));
-        let creator_addr = signer::address_of(creator);        
+        let creator_addr = signer::address_of(creator);
         let collection_id = create_collection_data_id(creator_addr, string::utf8(WEREWOLF_AND_WITCH_COLLECTION));        
         let whitelist_store = borrow_global_mut<WhiteList>(game_address);
         let i = 0;
