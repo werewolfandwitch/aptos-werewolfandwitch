@@ -2005,7 +2005,7 @@ module nft_war::wolf_witch {
             coin::deposit(signer::address_of(&resource_signer), coins);
             let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);            
             assert!(regen_timer.last_killed_time_type_4 < now_second, ENOT_READY_END);
-            let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
+            let win = dungeons::advanced_2(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
                 let prize_war = utils::random_with_nonce(resource_account_address, 34, token_id_1_str) + 1; // 1~200
@@ -2044,7 +2044,7 @@ module nft_war::wolf_witch {
             coin::deposit(signer::address_of(&resource_signer), coins);
             let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);            
             assert!(regen_timer.last_killed_time_type_5 < now_second, ENOT_READY_END);
-            let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
+            let win = dungeons::advanced_3(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
                 let prize_war = utils::random_with_nonce(resource_account_address, 45, token_id_1_str) + 1;
