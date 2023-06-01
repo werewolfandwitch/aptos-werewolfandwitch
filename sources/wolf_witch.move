@@ -217,6 +217,7 @@ module nft_war::wolf_witch {
 
     struct CreateGameEvent has drop, store {        
         minimum_elapsed_time: u64,
+        game_address:address
     }
 
     struct FighterChangeEvent has drop, store {
@@ -510,7 +511,8 @@ module nft_war::wolf_witch {
             total_nft_count:init_total_nft_count,
         }); 
         event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
-            minimum_elapsed_time: time_to_end,            
+            minimum_elapsed_time: time_to_end,
+            game_address:sender_addr            
         });        
     }        
 
@@ -1918,8 +1920,8 @@ module nft_war::wolf_witch {
                 });            
             };            
         };
-        // advanced 1
-        if(token_id_1_str >= 100 && token_id_1_str <= 400) {
+        // advanced 1 1 - 30
+        if(token_id_1_str >= 100 && token_id_1_str <= 500) {
             assert!(monster_type > 4, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 7, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 3);        
@@ -1929,12 +1931,12 @@ module nft_war::wolf_witch {
             let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
-                let prize_war = utils::random_with_nonce(resource_account_address, 15, token_id_1_str) + 1; // 1~200
+                let prize_war = utils::random_with_nonce(resource_account_address, 20, token_id_1_str) + 1; // 1~200
                 if(monster_type == 6) {
                     prize_war = prize_war + 6;                    
                 };
                 if(monster_type == 7) {
-                    prize_war = prize_war + 15;                    
+                    prize_war = prize_war + 10;                    
                 };
                 regen_timer.last_killed_time_type_3 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_C;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
@@ -1995,7 +1997,7 @@ module nft_war::wolf_witch {
                         
         };
 
-        // advanced 2
+        // advanced 2 1-40
         if(token_id_1_str >= 300 && token_id_1_str <= 600) {
             assert!(monster_type >= 8, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 9, error::permission_denied(ENOT_AUTHORIZED));
@@ -2006,9 +2008,9 @@ module nft_war::wolf_witch {
             let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
-                let prize_war = utils::random_with_nonce(resource_account_address, 18, token_id_1_str) + 1; // 1~200
+                let prize_war = utils::random_with_nonce(resource_account_address, 34, token_id_1_str) + 1; // 1~200
                 if(monster_type == 9) {
-                    prize_war = prize_war + 8;                    
+                    prize_war = prize_war + 6;                    
                 };                
                 regen_timer.last_killed_time_type_4 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_D;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
@@ -2034,8 +2036,8 @@ module nft_war::wolf_witch {
             };            
                         
         };
-        // advanced 3
-        if(token_id_1_str >= 700 && token_id_1_str <= 1200) {
+        // advanced 3 // 1~50
+        if(token_id_1_str >= 700) {
             assert!(monster_type >= 10, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 11, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 5); // pay 4 WAR COIN  
@@ -2045,9 +2047,9 @@ module nft_war::wolf_witch {
             let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
-                let prize_war = utils::random_with_nonce(resource_account_address, 20, token_id_1_str) + 1; // 1~200
+                let prize_war = utils::random_with_nonce(resource_account_address, 45, token_id_1_str) + 1; // 1~200
                 if(monster_type == 11) {
-                    prize_war = prize_war + 9;                    
+                    prize_war = prize_war + 5;                    
                 };                
                 regen_timer.last_killed_time_type_5 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_E;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
