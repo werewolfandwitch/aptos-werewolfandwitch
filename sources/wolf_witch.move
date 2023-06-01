@@ -217,6 +217,7 @@ module nft_war::wolf_witch {
 
     struct CreateGameEvent has drop, store {        
         minimum_elapsed_time: u64,
+        game_address:address
     }
 
     struct FighterChangeEvent has drop, store {
@@ -510,7 +511,8 @@ module nft_war::wolf_witch {
             total_nft_count:init_total_nft_count,
         }); 
         event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
-            minimum_elapsed_time: time_to_end,            
+            minimum_elapsed_time: time_to_end,
+            game_address:sender_addr            
         });        
     }        
 
@@ -1919,7 +1921,7 @@ module nft_war::wolf_witch {
             };            
         };
         // advanced 1
-        if(token_id_1_str >= 100 && token_id_1_str <= 400) {
+        if(token_id_1_str >= 100 && token_id_1_str <= 500) {
             assert!(monster_type > 4, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 7, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 3);        
@@ -2035,7 +2037,7 @@ module nft_war::wolf_witch {
                         
         };
         // advanced 3
-        if(token_id_1_str >= 700 && token_id_1_str <= 1200) {
+        if(token_id_1_str >= 700) {
             assert!(monster_type >= 10, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 11, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 5); // pay 4 WAR COIN  
