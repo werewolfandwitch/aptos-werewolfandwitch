@@ -2040,14 +2040,14 @@ module nft_war::wolf_witch {
         if(token_id_1_str >= 700) {
             assert!(monster_type >= 10, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 11, error::permission_denied(ENOT_AUTHORIZED));
-            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 5); // pay 4 WAR COIN  
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 5); // pay 5 WAR COIN  
             coin::deposit(signer::address_of(&resource_signer), coins);
             let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);            
             assert!(regen_timer.last_killed_time_type_5 < now_second, ENOT_READY_END);
             let win = dungeons::advanced(token_id_1_str, is_hero, monster_type, resource_account_address);
             if(win) {
                 let regen_timer = borrow_global_mut<MonsterRegenTimer>(game_address);
-                let prize_war = utils::random_with_nonce(resource_account_address, 45, token_id_1_str) + 1; // 1~200
+                let prize_war = utils::random_with_nonce(resource_account_address, 45, token_id_1_str) + 1;
                 if(monster_type == 11) {
                     prize_war = prize_war + 5;                    
                 };                
