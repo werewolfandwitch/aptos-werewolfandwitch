@@ -105,7 +105,7 @@ module nft_war::dungeons {
 
         if(dungeon_type == 6) {
             diff = if (fight_str > MONSTER_STRENGTH_6) { fight_str - MONSTER_STRENGTH_6 } else { MONSTER_STRENGTH_6 - fight_str }; 
-            let diff_multi = diff;
+            let diff_multi = diff * 2;
             if(diff_multi > 400) {
                 diff_multi = 400;
             };
@@ -115,7 +115,7 @@ module nft_war::dungeons {
 
         if(dungeon_type == 7) {
             diff = if (fight_str > MONSTER_STRENGTH_7) { fight_str - MONSTER_STRENGTH_7 } else { MONSTER_STRENGTH_7 - fight_str }; 
-            let diff_multi = diff;
+            let diff_multi = diff * 2;
             if(diff_multi > 499) {
                 diff_multi = 499;
             };
@@ -146,7 +146,7 @@ module nft_war::dungeons {
 
         if(dungeon_type == 9) {
             diff = if (fight_str > MONSTER_STRENGTH_9) { fight_str - MONSTER_STRENGTH_9 } else { MONSTER_STRENGTH_9 - fight_str }; 
-            let diff_multi = diff;
+            let diff_multi = diff * 2;
             if(diff_multi > 450) {
                 diff_multi = 450;
             };
@@ -156,7 +156,7 @@ module nft_war::dungeons {
       
         result       
     }
-    // Advanced 2 = Strength >= 700
+    // Advanced 3 = Strength >= 700
     public fun advanced_3(str:u64, is_hero:bool,  dungeon_type: u64, resource_account_address:address) : bool {                        
         assert!(str >= 700, 1);        
         let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_5) + 1; // 1~1000
@@ -176,7 +176,7 @@ module nft_war::dungeons {
 
         if(dungeon_type == 11) {
             diff = if (fight_str > MONSTER_STRENGTH_11) { fight_str - MONSTER_STRENGTH_11 } else { MONSTER_STRENGTH_11 - fight_str }; 
-            let diff_multi = diff;
+            let diff_multi = diff * 2;
             if(diff_multi > 450) {
                 diff_multi = 450;
             };
