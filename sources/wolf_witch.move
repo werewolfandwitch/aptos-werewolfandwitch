@@ -68,7 +68,7 @@ module nft_war::wolf_witch {
     const MINIMUM_REGEN_TIME_B:u64 = 21600; // 4 time every one day
     const MINIMUM_REGEN_TIME_C:u64 = 21600; // 4 times every one days. 
     const MINIMUM_REGEN_TIME_D:u64 = 21600; // 4 times every one days. 
-    const MINIMUM_REGEN_TIME_E:u64 = 43200; // 4 times every one days. 
+    const MINIMUM_REGEN_TIME_E:u64 = 43200; // 2 times every one days. 
 
     const MINIMUM_ELAPSED_TIME_FOR_BATTLE_COIN:u64 = 60; // at least 1min should be passed for stacking coins
 
