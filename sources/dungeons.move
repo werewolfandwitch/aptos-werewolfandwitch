@@ -156,7 +156,7 @@ module nft_war::dungeons {
       
         result       
     }
-    // Advanced 2 = Strength >= 700
+    // Advanced 3 = Strength >= 700
     public fun advanced_3(str:u64, is_hero:bool,  dungeon_type: u64, resource_account_address:address) : bool {                        
         assert!(str >= 700, 1);        
         let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_5) + 1; // 1~1000
