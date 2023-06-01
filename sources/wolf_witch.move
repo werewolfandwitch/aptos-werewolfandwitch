@@ -1921,7 +1921,7 @@ module nft_war::wolf_witch {
             };            
         };
         // advanced 1 1 - 30
-        if(token_id_1_str >= 100 && token_id_1_str <= 500) {
+        if(token_id_1_str >= 100 && token_id_1_str <= 400) {
             assert!(monster_type > 4, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 7, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 3);        
@@ -1998,7 +1998,7 @@ module nft_war::wolf_witch {
         };
 
         // advanced 2 1-40
-        if(token_id_1_str >= 300 && token_id_1_str <= 600) {
+        if(token_id_1_str >= 400 && token_id_1_str <= 600) {
             assert!(monster_type >= 8, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 9, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 4); // pay 4 WAR COIN  
@@ -2037,7 +2037,7 @@ module nft_war::wolf_witch {
                         
         };
         // advanced 3 // 1~50
-        if(token_id_1_str >= 700) {
+        if(token_id_1_str >= 600) {
             assert!(monster_type >= 10, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type <= 11, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 5); // pay 5 WAR COIN  
