@@ -18,7 +18,7 @@ module nft_war::dungeons {
     // advance 2, 300lv - 600lv
     const MONSTER_STRENGTH_8:u64 = 400;
     const MONSTER_STRENGTH_9:u64 = 700;
-    // advance 3, 600lv - 900lv
+    // advance 3, 700lv~
     const MONSTER_STRENGTH_10:u64 = 700;
     const MONSTER_STRENGTH_11:u64 = 1200;
         
@@ -130,7 +130,7 @@ module nft_war::dungeons {
         assert!(str >= 300, 1);
         assert!(str <= 600, 1);
         let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_8) + 1; // 1~1000
-        let fight_str = if (is_hero) { str * 2 } else { str };        
+        let fight_str = if (is_hero) { str + 100 } else { str };        
         let diff;        
         let win_rate;
         let result = false;
@@ -160,7 +160,7 @@ module nft_war::dungeons {
     public fun advanced_3(str:u64, is_hero:bool,  dungeon_type: u64, resource_account_address:address) : bool {                        
         assert!(str >= 700, 1);        
         let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_5) + 1; // 1~1000
-        let fight_str = if (is_hero) { str * 2 } else { str };        
+        let fight_str = if (is_hero) { str + 200 } else { str };        
         let diff;        
         let win_rate;
         let result = false;
