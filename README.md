@@ -3,7 +3,7 @@
 ## Aptos hackathon project in Seoul hackathon
 
 
-- Go To [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
+- Live: [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
 
 
 ## move functions
