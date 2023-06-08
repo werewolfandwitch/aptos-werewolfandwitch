@@ -13,13 +13,13 @@ nft_war ="_"
 war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
 aptos_coin="0x1"
 season_pre_creator="0x7dcb4e0e1130bbadaad6cb11d9e64dabd936cd3e3870927b21247416cecffd74"
-season_now_creator="0xb3facd0cc413166003b51d3dae3512ef4731c1e56827efe0bf0c1e62c937512b"
+season_now_creator="0x3ac4bd513a7e61abc79cc183ae2dd4c67c5c38d8881d914baeed57ab0260c15c"
 item_pre_creator="0x5279c061a7ac9b0abccea372b66cf286675a29233756b1c6d15d7c5b6d89e781"
 item_now_creator="0x961b01e6c9e845a43498222fc74214e8a2073bf41ade625e328fa5d6e258c422"
 aptos_framework="0x1"
 aptos_std="0x1"
 aptos_token="0x3"
 std="0x1"
-item_gen="0xe5e9b1a7862f536a95e51aac62406d055ac83c61bacbe8cd69df9909cbbaddbd" ## should be deployed
+item_gen="0xab83dca6cbd53019410a41029f1212e682d3e78ea3a0bfc532887b0f0eaa0096" ## should be deployed
 [dev-addresses]
 war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
