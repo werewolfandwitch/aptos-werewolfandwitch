@@ -114,6 +114,17 @@ module nft_war::wolf_witch {
     const HERO_E: vector<u8> = b"Selena Shadowmoon";
     const HERO_F: vector<u8> = b"Nyx Nightshade";
     const HERO_G: vector<u8> = b"Blazefang";   
+
+    const MATERIAL_A: vector<u8> = b"Glimmering Crystals";
+    const MATERIAL_B: vector<u8> = b"Ethereal Essence";
+    const MATERIAL_C: vector<u8> = b"Dragon Scale";
+    const MATERIAL_D: vector<u8> = b"Celestial Dust";
+    const MATERIAL_E: vector<u8> = b"Essence of the Ancients";
+    const MATERIAL_F: vector<u8> = b"Phoenix Feather";
+    const MATERIAL_G: vector<u8> = b"Moonstone Ore";
+    const MATERIAL_H: vector<u8> = b"Enchanted Wood";
+    const MATERIAL_I: vector<u8> = b"Kraken Ink";
+    const MATERIAL_J: vector<u8> = b"Elemental Essence";
     // This struct stores an NFT collection's relevant information
     struct WarGame has store, key {          
         signer_cap: account::SignerCapability,        
@@ -710,6 +721,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:0,
                 });
+                item_material_drop(holder, string::utf8(MATERIAL_J), 10);
             } else {
                 let token = token::withdraw_token(holder, token_id_1, 1);                        
                 token::direct_deposit_with_opt_in(fighter.owner, token);
@@ -718,6 +730,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:0,
                 });
+                item_material_drop(holder, string::utf8(MATERIAL_C), 5);
             };
         } else {
             if(random < lose_rate) { 
@@ -735,7 +748,8 @@ module nft_war::wolf_witch {
                     win: true,
                     battle_time:now_second,
                     paid:0,                    
-                });                
+                });
+                item_material_drop(holder, string::utf8(MATERIAL_I), 10);
             } else { 
                 let token = token::withdraw_token(holder, token_id_1, 1);                        
                 token::direct_deposit_with_opt_in(fighter.owner, token);
@@ -1834,13 +1848,15 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_A), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
                     battle_time:now_second,
                     earn:0,
                     death:false
-                });                                           
+                });            
+                item_material_drop(sender, string::utf8(MATERIAL_G), 20);
             };            
         };
         if(token_id_1_str < 100 && token_id_1_str >= 50) {
@@ -1878,13 +1894,15 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_B), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
                     battle_time:now_second,
                     earn:0,
                     death:false
-                });            
+                });
+                item_material_drop(sender, string::utf8(MATERIAL_H), 30);            
             };            
         };
         // advanced 1 1 - 30
@@ -1953,7 +1971,9 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_C), 60);
             } else {
+                item_material_drop(sender, string::utf8(MATERIAL_F), 10);
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
                     battle_time:now_second,
@@ -1993,6 +2013,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_D), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -2000,6 +2021,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_G), 20);
             };            
                         
         };
@@ -2032,6 +2054,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_E), 30);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -2039,6 +2062,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });
+                item_material_drop(sender, string::utf8(MATERIAL_F), 30);
             };            
                         
         };
