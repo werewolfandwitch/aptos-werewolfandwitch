@@ -2099,7 +2099,7 @@ module nft_war::wolf_witch {
     entry fun exploration<WarCoinType> (
         sender: &signer, game_address:address,
         creator:address, name_1: String, property_version_1: u64, exploration_type: u64 // 1~2
-    ) acquires WarGame {        
+    ) acquires WarGame,GameEvents {        
         let coin_address = coin_address<WarCoinType>();
         assert!(creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
@@ -2108,6 +2108,7 @@ module nft_war::wolf_witch {
         let resource_signer = get_resource_account_cap(game_address);        
         let sender_addr = signer::address_of(sender);        
         assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
+        let game_events = borrow_global_mut<GameEvents>(game_address);
         let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
         let guid = account::create_guid(&resource_signer);
         let uniq_id = guid::creation_num(&guid);        
@@ -2119,7 +2120,7 @@ module nft_war::wolf_witch {
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
             coin::deposit(signer::address_of(&resource_signer), coins);            
             let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1;
-            let win = if(random < 40) { true } else { false };
+            let win = if (random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
                     item_material_drop(sender,game_address, string::utf8(MATERIAL_H), 5);
@@ -2128,6 +2129,19 @@ module nft_war::wolf_witch {
                 };
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, 2 * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: true,
+                    battle_time: timestamp::now_seconds(),
+                    earn: 2 * WAR_COIN_DECIMAL,
+                    death:false
+                });
+            } else {
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: false,
+                    battle_time: timestamp::now_seconds(),
+                    earn: 0,
+                    death:false
+                });
             }
         };
         if(token_id_1_str >= 50) {            
@@ -2145,6 +2159,19 @@ module nft_war::wolf_witch {
                 };                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, 4 * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: true,
+                    battle_time: timestamp::now_seconds(),
+                    earn: 2 * WAR_COIN_DECIMAL,
+                    death:false
+                });
+            } else {
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: false,
+                    battle_time: timestamp::now_seconds(),
+                    earn: 0,
+                    death:false
+                });
             }
         };                
     }
@@ -2215,7 +2242,7 @@ module nft_war::wolf_witch {
         );
         // get item properties        
         item_equip::item_equip(
-            sender, contract_address,
+            sender, &resource_signer, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
             item_token_name, item_collection_name, item_creator, item_property_version                     
         )                
@@ -2243,7 +2270,7 @@ module nft_war::wolf_witch {
             vector<String>[string::utf8(b"bool"),string::utf8(b"u64"),string::utf8(b"u64")],
         );
         item_equip::item_unequip(
-            sender, contract_address,
+            sender, &resource_signer, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
             item_token_name, item_collection_name, item_creator, item_property_version                    
         )                               
