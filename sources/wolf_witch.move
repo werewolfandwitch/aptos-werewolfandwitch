@@ -68,10 +68,10 @@ module nft_war::wolf_witch {
 
     // monster regen time
     const MINIMUM_REGEN_TIME_A:u64 = 10800; // 8 time in one day
-    const MINIMUM_REGEN_TIME_B:u64 = 21600; // 4 time every one day
-    const MINIMUM_REGEN_TIME_C:u64 = 21600; // 4 times every one days. 
+    const MINIMUM_REGEN_TIME_B:u64 = 10800; // 8 time every one day
+    const MINIMUM_REGEN_TIME_C:u64 = 10800; // 8 times every one days. 
     const MINIMUM_REGEN_TIME_D:u64 = 21600; // 4 times every one days. 
-    const MINIMUM_REGEN_TIME_E:u64 = 43200; // 2 times every one days. 
+    const MINIMUM_REGEN_TIME_E:u64 = 21600; // 4 times every one days. 
 
     const MINIMUM_ELAPSED_TIME_FOR_BATTLE_COIN:u64 = 60; // at least 1min should be passed for stacking coins
 
@@ -2116,6 +2116,10 @@ module nft_war::wolf_witch {
         let holder_addr = signer::address_of(sender);
         let resource_signer = get_resource_account_cap(game_address);
         let fight_token_id = token::create_token_id_raw(fighter_creator, fighter_collection_name, fighter_token_name, fighter_property_version);
+        // check holding
+        let token = token::withdraw_token(sender, fight_token_id, 1);
+        token::deposit_token(sender, token);
+
         let item_token_id = token::create_token_id_raw(item_creator, item_collection_name, item_token_name, item_property_version);
         // get item property
         
