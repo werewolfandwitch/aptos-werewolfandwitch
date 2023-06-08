@@ -1398,9 +1398,9 @@ module nft_war::wolf_witch {
                 // we don't allow any mutation to the token
                 token::create_token_mutability_config(mutability_config),
                 // type
-                vector<String>[string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO)],  // property_keys                
-                vector<vector<u8>>[bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&randomStrength), bcs::to_bytes<bool>(&isWolf),bcs::to_bytes<bool>(&false)],  // values 
-                vector<String>[string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool")],      // type
+                vector<String>[string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO), string::utf8(IS_EQUIP)],  // property_keys                
+                vector<vector<u8>>[bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&randomStrength), bcs::to_bytes<bool>(&isWolf),bcs::to_bytes<bool>(&false), bcs::to_bytes<bool>(&false)],  // values 
+                vector<String>[string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool"),string::utf8(b"bool")],      // type
         );        
         utils::token_mint_and_transfer(resource_signer,receiver,token_data_id);                
         
@@ -1753,6 +1753,9 @@ module nft_war::wolf_witch {
             let (_,_,token_name_new,_) = token::get_token_id_fields(&token_id_1);
             token_name = token_name_new;
         };
+        //     vector<String>[string::utf8(IS_EQUIP), string::utf8(ITEM_LEVEL), string::utf8(ITEM_DEFAULT_STR)],  // property_keys                
+        //     vector<vector<u8>>[bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&level),bcs::to_bytes<u64>(&default_str)],  // values 
+        //     vector<String>[string::utf8(b"bool"),string::utf8(b"u64"),string::utf8(b"u64")],      // type
 
         let token_data_id = token::create_tokendata(
                 &resource_signer,
@@ -1768,13 +1771,16 @@ module nft_war::wolf_witch {
                 token::create_token_mutability_config(mutability_config),
                 // type
                 vector<String>[
-                    string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO), string::utf8(IS_EQUIP)
+                    string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), 
+                    string::utf8(IS_WOLF),string::utf8(IS_HERO),string::utf8(IS_EQUIP)
                 ],  // property_keys                
                 vector<vector<u8>>[
-                    bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
+                    bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), 
+                    bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
                 ],  // values 
                 vector<String>[
-                    string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"bool")
+                    string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"), 
+                    string::utf8(b"bool"), string::utf8(b"bool")
                 ],      // type
         );        
         
@@ -2077,9 +2083,64 @@ module nft_war::wolf_witch {
         };
     }
 
+    entry fun exploration<WarCoinType> (
+        sender: &signer, game_address:address,
+        creator:address, name_1: String, property_version_1: u64, exploration_type: u64 // 1~2
+    ) acquires WarGame {        
+        let coin_address = coin_address<WarCoinType>();
+        assert!(creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
+        assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
+        let minter = borrow_global<WarGame>(game_address);        
+        assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
+        let resource_signer = get_resource_account_cap(game_address);                
+        // let resource_account_address = signer::address_of(&resource_signer);        
+        let sender_addr = signer::address_of(sender);
+        // let game_events = borrow_global_mut<GameEvents>(game_address);        
+        // entrance fee = 1WAR Coin
+        assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
+        let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
+        let pm = token::get_property_map(signer::address_of(sender), token_id_1);
+        let (_is_wolf_1, token_id_1_str, _is_hero) = get_pm_properties(pm);
+        if (token_id_1_str < 50) {            
+            // entrance fee
+            assert!(exploration_type == 1, error::permission_denied(ENOT_AUTHORIZED));
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
+            coin::deposit(signer::address_of(&resource_signer), coins);            
+            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let win = if(random < 45) { true } else { false };
+            if(win) {
+                if(random < 5) {
+                    item_material_drop(sender, string::utf8(MATERIAL_H), 5);
+                } else {
+                    item_material_drop(sender, string::utf8(MATERIAL_G), 5);
+                };
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, 2 * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);                
+            }
+        };
+        if(token_id_1_str >= 50) {            
+            // entrance fee
+            assert!(exploration_type == 2, error::permission_denied(ENOT_AUTHORIZED));
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 2);        
+            coin::deposit(signer::address_of(&resource_signer), coins);
+            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let win = if(random < 45) { true } else { false };
+            if(win) {
+                if(random < 5) {
+                    item_material_drop(sender, string::utf8(MATERIAL_J), 5);
+                } else {
+                    item_material_drop(sender, string::utf8(MATERIAL_I), 5);
+                };                
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, 4 * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);                
+            }
+        };                
+    }
+
     fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
         let sender_addr = signer::address_of(sender);
         let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1; // 1~100
+        assert!(drop_rate > 100, ENOT_AUTHORIZED);
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender,
