@@ -1398,9 +1398,9 @@ module nft_war::wolf_witch {
                 // we don't allow any mutation to the token
                 token::create_token_mutability_config(mutability_config),
                 // type
-                vector<String>[string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO)],  // property_keys                
-                vector<vector<u8>>[bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&randomStrength), bcs::to_bytes<bool>(&isWolf),bcs::to_bytes<bool>(&false)],  // values 
-                vector<String>[string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool")],      // type
+                vector<String>[string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO), string::utf8(IS_EQUIP)],  // property_keys                
+                vector<vector<u8>>[bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&randomStrength), bcs::to_bytes<bool>(&isWolf),bcs::to_bytes<bool>(&false), bcs::to_bytes<bool>(&false)],  // values 
+                vector<String>[string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool"),string::utf8(b"bool")],      // type
         );        
         utils::token_mint_and_transfer(resource_signer,receiver,token_data_id);                
         
@@ -1753,6 +1753,9 @@ module nft_war::wolf_witch {
             let (_,_,token_name_new,_) = token::get_token_id_fields(&token_id_1);
             token_name = token_name_new;
         };
+        //     vector<String>[string::utf8(IS_EQUIP), string::utf8(ITEM_LEVEL), string::utf8(ITEM_DEFAULT_STR)],  // property_keys                
+        //     vector<vector<u8>>[bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&level),bcs::to_bytes<u64>(&default_str)],  // values 
+        //     vector<String>[string::utf8(b"bool"),string::utf8(b"u64"),string::utf8(b"u64")],      // type
 
         let token_data_id = token::create_tokendata(
                 &resource_signer,
@@ -1768,13 +1771,16 @@ module nft_war::wolf_witch {
                 token::create_token_mutability_config(mutability_config),
                 // type
                 vector<String>[
-                    string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO), string::utf8(IS_EQUIP)
+                    string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), 
+                    string::utf8(IS_WOLF),string::utf8(IS_HERO),string::utf8(IS_EQUIP)
                 ],  // property_keys                
                 vector<vector<u8>>[
-                    bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
+                    bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), 
+                    bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
                 ],  // values 
                 vector<String>[
-                    string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"bool")
+                    string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"), 
+                    string::utf8(b"bool"), string::utf8(b"bool")
                 ],      // type
         );        
         
