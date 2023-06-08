@@ -20,6 +20,6 @@ aptos_framework="0x1"
 aptos_std="0x1"
 aptos_token="0x3"
 std="0x1"
-item_gen="0xc03c46320f548c9592b41b46a57967c4e76bf38aa4b7f2741eae6ac115001a1a" ## should be deployed
+item_gen="0x483e55935dfb76210eaad8ae39d6be0c877bf35ea07231e5c80cd9ab95a69e3b" ## should be deployed
 [dev-addresses]
 war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
