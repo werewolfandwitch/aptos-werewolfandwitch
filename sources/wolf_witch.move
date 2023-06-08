@@ -2234,9 +2234,9 @@ module nft_war::wolf_witch {
             &resource_signer,
             holder_addr,
             fight_token_id,            
-            vector<String>[string::utf8(IS_EQUIP)],  // property_keys                
-            vector<vector<u8>>[bcs::to_bytes<bool>(&false)],  // values 
-            vector<String>[string::utf8(b"bool")],      // type
+            vector<String>[string::utf8(IS_EQUIP), string::utf8(ITEM_LEVEL), string::utf8(ITEM_DEFAULT_STR)],  // property_keys                
+            vector<vector<u8>>[bcs::to_bytes<bool>(&false), bcs::to_bytes<u64>(&0),bcs::to_bytes<u64>(&0)],  // values 
+            vector<String>[string::utf8(b"bool"),string::utf8(b"u64"),string::utf8(b"u64")],
         );
         item_equip::item_unequip(
             sender, contract_address,
