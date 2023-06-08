@@ -727,7 +727,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:0,
                 });
-                item_material_drop(holder, string::utf8(MATERIAL_J), 10);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_J), 10);
             } else {
                 let token = token::withdraw_token(holder, token_id_1, 1);                        
                 token::direct_deposit_with_opt_in(fighter.owner, token);
@@ -736,7 +736,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:0,
                 });
-                item_material_drop(holder, string::utf8(MATERIAL_C), 5);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_C), 5);
             };
         } else {
             if(random < lose_rate) { 
@@ -755,7 +755,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:0,                    
                 });
-                item_material_drop(holder, string::utf8(MATERIAL_I), 10);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_I), 10);
             } else { 
                 let token = token::withdraw_token(holder, token_id_1, 1);                        
                 token::direct_deposit_with_opt_in(fighter.owner, token);
@@ -1163,7 +1163,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid: pay_amount,                    
                 });
-                item_material_drop(holder, string::utf8(MATERIAL_A), 20);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_A), 20);
             } else {                
                 
                 let coins = coin::withdraw<WarCoinType>(holder, pay_amount);
@@ -1186,7 +1186,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:pay_amount,                    
                 });
-                item_material_drop(holder, string::utf8(MATERIAL_B), 10);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_B), 10);
             };
         } else { // if i'm weak
             let pay_amount = bet_amount * (win_rate - 1) / 100;
@@ -1210,7 +1210,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid: pay_amount,
                 });             
-                item_material_drop(holder, string::utf8(MATERIAL_C), 20);
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_C), 20);
             } else {                 
                 let coins = coin::withdraw<WarCoinType>(holder, pay_amount);
                 coin::deposit(fighter.owner, coins);
@@ -1232,7 +1232,7 @@ module nft_war::wolf_witch {
                     battle_time:now_second,
                     paid:pay_amount,                    
                 });              
-                item_material_drop(holder, string::utf8(MATERIAL_I), 10);                
+                item_material_drop(holder, game_address, string::utf8(MATERIAL_I), 10);                
             };
         };           
     }
@@ -1241,7 +1241,7 @@ module nft_war::wolf_witch {
         let ind = 1;
         assert!(amount > 1, error::permission_denied(ENOT_AUTHORIZED));
         assert!(amount < 1000, error::permission_denied(ENOT_AUTHORIZED));        
-        item_material_drop(receiver, string::utf8(MATERIAL_E), 5);
+        item_material_drop(receiver, game_address, string::utf8(MATERIAL_E), 5);
         while (ind <= amount) {
             mint_token<CoinType>(receiver, game_address, false, ind);
             ind = ind + 1;
@@ -1875,7 +1875,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_A), 60);
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_A), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -1883,7 +1883,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });            
-                item_material_drop(sender, string::utf8(MATERIAL_G), 20);
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_G), 20);
             };            
         };
 
@@ -1922,7 +1922,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_B), 60);
+                item_material_drop(sender,game_address, string::utf8(MATERIAL_B), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -1930,7 +1930,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_H), 30);            
+                item_material_drop(sender,game_address, string::utf8(MATERIAL_H), 30);            
             };            
         };
         // advanced 1 1 - 30
@@ -1999,9 +1999,9 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_C), 60);
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_C), 60);
             } else {
-                item_material_drop(sender, string::utf8(MATERIAL_F), 10);
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_F), 10);
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
                     battle_time:now_second,
@@ -2041,7 +2041,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_D), 60);
+                item_material_drop(sender,game_address, string::utf8(MATERIAL_D), 60);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -2049,7 +2049,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_G), 20);
+                item_material_drop(sender,game_address, string::utf8(MATERIAL_G), 20);
             };            
                         
         };
@@ -2082,7 +2082,7 @@ module nft_war::wolf_witch {
                     earn: prize_war * WAR_COIN_DECIMAL,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_E), 30);
+                item_material_drop(sender,game_address, string::utf8(MATERIAL_E), 30);
             } else {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: false,
@@ -2090,7 +2090,7 @@ module nft_war::wolf_witch {
                     earn:0,
                     death:false
                 });
-                item_material_drop(sender, string::utf8(MATERIAL_F), 30);
+                item_material_drop(sender,game_address,string::utf8(MATERIAL_F), 30);
             };            
                         
         };
@@ -2105,7 +2105,7 @@ module nft_war::wolf_witch {
         assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
         let minter = borrow_global<WarGame>(game_address);        
         assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
-        let resource_signer = get_resource_account_cap(game_address);                
+        let resource_signer = get_resource_account_cap(game_address);
         // let resource_account_address = signer::address_of(&resource_signer);        
         let sender_addr = signer::address_of(sender);
         // let game_events = borrow_global_mut<GameEvents>(game_address);        
@@ -2123,9 +2123,9 @@ module nft_war::wolf_witch {
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
-                    item_material_drop(sender, string::utf8(MATERIAL_H), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_H), 5);
                 } else {
-                    item_material_drop(sender, string::utf8(MATERIAL_G), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_G), 5);
                 };
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, 2 * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
@@ -2140,9 +2140,9 @@ module nft_war::wolf_witch {
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
-                    item_material_drop(sender, string::utf8(MATERIAL_J), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_J), 5);
                 } else {
-                    item_material_drop(sender, string::utf8(MATERIAL_I), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_I), 5);
                 };                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, 4 * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
@@ -2150,14 +2150,16 @@ module nft_war::wolf_witch {
         };                
     }
 
-    fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
+    fun item_material_drop (sender: &signer, game_address:address, token_name:String, drop_rate:u64) acquires WarGame {
         let sender_addr = signer::address_of(sender);
         let random = utils::random_with_nonce(sender_addr, 100, 1) + 1; // 1~100
         assert!(drop_rate < 100, ENOT_AUTHORIZED);
+        let resource_signer = get_resource_account_cap(game_address);                
         if(random <= drop_rate) {
             item_materials::mint_item_material(
-                sender,
-                @item_gen,
+                sender, // receiver
+                &resource_signer, // authorized address 
+                @item_gen, // contract address
                 token_name                     
             )
         };
