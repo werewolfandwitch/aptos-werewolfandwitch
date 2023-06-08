@@ -2157,6 +2157,7 @@ module nft_war::wolf_witch {
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender,
+                @item_gen,
                 token_name                     
             )
         };
