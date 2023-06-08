@@ -2162,7 +2162,7 @@ module nft_war::wolf_witch {
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
                     win: true,
                     battle_time: timestamp::now_seconds(),
-                    earn: 2 * WAR_COIN_DECIMAL,
+                    earn: 4 * WAR_COIN_DECIMAL,
                     death:false
                 });
             } else {
