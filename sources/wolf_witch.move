@@ -2105,13 +2105,12 @@ module nft_war::wolf_witch {
         assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
         let minter = borrow_global<WarGame>(game_address);        
         assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
-        let resource_signer = get_resource_account_cap(game_address);
-        // let resource_account_address = signer::address_of(&resource_signer);        
-        let sender_addr = signer::address_of(sender);
-        // let game_events = borrow_global_mut<GameEvents>(game_address);        
-        // entrance fee = 1WAR Coin
+        let resource_signer = get_resource_account_cap(game_address);        
+        let sender_addr = signer::address_of(sender);        
         assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
         let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
+        let guid = account::create_guid(&resource_signer);
+        let uniq_id = guid::creation_num(&guid);        
         let pm = token::get_property_map(signer::address_of(sender), token_id_1);
         let (_is_wolf_1, token_id_1_str, _is_hero) = get_pm_properties(pm);
         if (token_id_1_str < 50) {            
@@ -2119,7 +2118,7 @@ module nft_war::wolf_witch {
             assert!(exploration_type == 1, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
             coin::deposit(signer::address_of(&resource_signer), coins);            
-            let random = utils::random_with_nonce(sender_addr, 100, 1) + 1;
+            let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1;
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
@@ -2136,7 +2135,7 @@ module nft_war::wolf_witch {
             assert!(exploration_type == 2, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 2);        
             coin::deposit(signer::address_of(&resource_signer), coins);
-            let random = utils::random_with_nonce(sender_addr, 100, 1) + 1;
+            let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1;
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
@@ -2152,9 +2151,11 @@ module nft_war::wolf_witch {
 
     fun item_material_drop (sender: &signer, game_address:address, token_name:String, drop_rate:u64) acquires WarGame {
         let sender_addr = signer::address_of(sender);
-        let random = utils::random_with_nonce(sender_addr, 100, 1) + 1; // 1~100
-        assert!(drop_rate < 100, ENOT_AUTHORIZED);
         let resource_signer = get_resource_account_cap(game_address);                
+        let guid = account::create_guid(&resource_signer);
+        let uniq_id = guid::creation_num(&guid);        
+        let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1; // 1~100
+        assert!(drop_rate < 100, ENOT_AUTHORIZED);        
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender, // receiver
