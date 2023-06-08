@@ -89,8 +89,8 @@ module nft_war::wolf_witch {
     
     // collection name
     
-    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S04"; // lose faction
-    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S05";
+    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S05"; // lose faction
+    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S06";
     const LAND_COLLECTION_NAME:vector<u8> = b"LAND TOKEN COLLECTION";    
     const POTION_COLLECTION_NAME:vector<u8> = b"POTION TOKEN COLLECTION";
     // HONOR
