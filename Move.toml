@@ -12,14 +12,14 @@ ItemGen = { git = "https://github.com/werewolfandwitch/aptos-game-item-generator
 nft_war ="_"
 war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
 aptos_coin="0x1"
-season_pre_creator="0x91cfc490cfc99976e4f4ee016742a712478270ca90ce3c4f19ac58d2ddf4d975"
-season_now_creator="0x7dcb4e0e1130bbadaad6cb11d9e64dabd936cd3e3870927b21247416cecffd74"
+season_pre_creator="0x7dcb4e0e1130bbadaad6cb11d9e64dabd936cd3e3870927b21247416cecffd74"
+season_now_creator="0x97c72a19fbd0e7031336c8a1cd7f45af26312e2fc390bf8a43288db48273e785"
 item_pre_creator="0x5279c061a7ac9b0abccea372b66cf286675a29233756b1c6d15d7c5b6d89e781"
 item_now_creator="0x961b01e6c9e845a43498222fc74214e8a2073bf41ade625e328fa5d6e258c422"
 aptos_framework="0x1"
 aptos_std="0x1"
 aptos_token="0x3"
 std="0x1"
-item_gen="0xfedc12acfb5a1824c7dcafb6ace3ac29bb243e011ddd2ed455f041e0b943223c" ## should be deployed
+item_gen="0xc03c46320f548c9592b41b46a57967c4e76bf38aa4b7f2741eae6ac115001a1a" ## should be deployed
 [dev-addresses]
 war_coin="0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a"
