@@ -2151,9 +2151,11 @@ module nft_war::wolf_witch {
 
     fun item_material_drop (sender: &signer, game_address:address, token_name:String, drop_rate:u64) acquires WarGame {
         let sender_addr = signer::address_of(sender);
-        let random = utils::random_with_nonce(sender_addr, 100, 1) + 1; // 1~100
-        assert!(drop_rate < 100, ENOT_AUTHORIZED);
         let resource_signer = get_resource_account_cap(game_address);                
+        let guid = account::create_guid(&resource_signer);
+        let uniq_id = guid::creation_num(&guid);        
+        let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1; // 1~100
+        assert!(drop_rate < 100, ENOT_AUTHORIZED);        
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender, // receiver
