@@ -68,10 +68,10 @@ module nft_war::wolf_witch {
 
     // monster regen time
     const MINIMUM_REGEN_TIME_A:u64 = 10800; // 8 time in one day
-    const MINIMUM_REGEN_TIME_B:u64 = 21600; // 4 time every one day
-    const MINIMUM_REGEN_TIME_C:u64 = 21600; // 4 times every one days. 
+    const MINIMUM_REGEN_TIME_B:u64 = 10800; // 8 time every one day
+    const MINIMUM_REGEN_TIME_C:u64 = 10800; // 8 times every one days. 
     const MINIMUM_REGEN_TIME_D:u64 = 21600; // 4 times every one days. 
-    const MINIMUM_REGEN_TIME_E:u64 = 43200; // 2 times every one days. 
+    const MINIMUM_REGEN_TIME_E:u64 = 21600; // 4 times every one days. 
 
     const MINIMUM_ELAPSED_TIME_FOR_BATTLE_COIN:u64 = 60; // at least 1min should be passed for stacking coins
 
@@ -85,12 +85,14 @@ module nft_war::wolf_witch {
     const IS_HERO: vector<u8> = b"W_TOKEN_IS_HERO"; 
     const IS_EQUIP:vector<u8> = b"W_TOKEN_IS_EQUIP";
     const POTION_TYPE:vector<u8> = b"W_POTION_TYPE";
-    const WAR_COIN_NAME:vector<u8> = b"War Coin";    
+    // item property
+    const ITEM_LEVEL: vector<u8> = b"W_ITEM_LEVEL";
+    const ITEM_DEFAULT_STR: vector<u8> = b"W_ITEM_DEFAULT_STRENGTH";
     
-    // collection name
-    
+    // collection name // TODO change
     const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S05"; // lose faction
     const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S06";
+    
     const LAND_COLLECTION_NAME:vector<u8> = b"LAND TOKEN COLLECTION";    
     const POTION_COLLECTION_NAME:vector<u8> = b"POTION TOKEN COLLECTION";
     // HONOR
@@ -2105,26 +2107,63 @@ module nft_war::wolf_witch {
     // item equip / unequip
 
     entry fun item_equip(
-        sender: &signer, contract_address:address,
-        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,
+        sender: &signer, game_address:address, contract_address:address,
+        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,fighter_property_version:u64,
         owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
-        ) {            
+        ) acquires WarGame { 
+        
         assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
+        let holder_addr = signer::address_of(sender);
+        let resource_signer = get_resource_account_cap(game_address);
+        let fight_token_id = token::create_token_id_raw(fighter_creator, fighter_collection_name, fighter_token_name, fighter_property_version);
+        // check holding
+        let token = token::withdraw_token(sender, fight_token_id, 1);
+        token::deposit_token(sender, token);
+
+        let item_token_id = token::create_token_id_raw(item_creator, item_collection_name, item_token_name, item_property_version);
+        // get item property
+        
+        let pm = token::get_property_map(holder_addr, item_token_id);
+        let level = property_map::read_u64(&pm, &string::utf8(ITEM_LEVEL));
+        let default_str = property_map::read_u64(&pm, &string::utf8(ITEM_DEFAULT_STR));
+
+        token::mutate_one_token(            
+            &resource_signer,
+            holder_addr,
+            fight_token_id,            
+            vector<String>[string::utf8(IS_EQUIP), string::utf8(ITEM_LEVEL), string::utf8(ITEM_DEFAULT_STR)],  // property_keys                
+            vector<vector<u8>>[bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&level),bcs::to_bytes<u64>(&default_str)],  // values 
+            vector<String>[string::utf8(b"bool"),string::utf8(b"u64"),string::utf8(b"u64")],      // type
+        );
+        // get item properties        
         item_equip::item_equip(
             sender, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
             owner, item_token_name, item_collection_name, item_creator, item_property_version                     
         )                
-    }
-
-    
+    }    
 
     entry fun item_unequip(
-        sender: &signer, contract_address:address,
-        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,
+        sender: &signer, game_address:address, contract_address:address,
+        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address, fighter_property_version:u64,
         owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
-        ) { 
+        ) acquires WarGame { 
         assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
+        let holder_addr = signer::address_of(sender);
+        let resource_signer = get_resource_account_cap(game_address);
+        let fight_token_id = token::create_token_id_raw(fighter_creator, fighter_collection_name, fighter_token_name, fighter_property_version);                        
+        // check holding
+        let token = token::withdraw_token(sender, fight_token_id, 1);
+        token::deposit_token(sender, token);
+
+        token::mutate_one_token(            
+            &resource_signer,
+            holder_addr,
+            fight_token_id,            
+            vector<String>[string::utf8(IS_EQUIP)],  // property_keys                
+            vector<vector<u8>>[bcs::to_bytes<bool>(&false)],  // values 
+            vector<String>[string::utf8(b"bool")],      // type
+        );
         item_equip::item_unequip(
             sender, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
