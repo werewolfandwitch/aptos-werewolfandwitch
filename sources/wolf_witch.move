@@ -82,6 +82,7 @@ module nft_war::wolf_witch {
     const GAME_STRENGTH: vector<u8> = b"W_TOKEN_GAME_STRENGTH";
     const IS_WOLF: vector<u8> = b"W_TOKEN_IS_WOLF";   
     const IS_HERO: vector<u8> = b"W_TOKEN_IS_HERO"; 
+    const IS_EQUIP:vector<u8> = b"W_TOKEN_IS_EQUIP";
     const POTION_TYPE:vector<u8> = b"W_POTION_TYPE";
     const WAR_COIN_NAME:vector<u8> = b"War Coin";    
     
@@ -1709,7 +1710,7 @@ module nft_war::wolf_witch {
         let is_wolf_1 = property_map::read_bool(&pm, &string::utf8(IS_WOLF));
         let token_id_1_str = property_map::read_u64(&pm, &string::utf8(GAME_STRENGTH));
         let is_hero = property_map::read_bool(&pm, &string::utf8(IS_HERO));
-                                        
+        let is_equip = false; // SHOULD BE CHANGED IN NEXT SEASON
         let supply_count = &mut token::get_collection_supply(resource_account_address, string::utf8(WEREWOLF_AND_WITCH_COLLECTION));        
         let new_supply = option::extract<u64>(supply_count);
         let count_string = utils::to_string((new_supply as u128));
@@ -1752,6 +1753,7 @@ module nft_war::wolf_witch {
             let (_,_,token_name_new,_) = token::get_token_id_fields(&token_id_1);
             token_name = token_name_new;
         };
+
         let token_data_id = token::create_tokendata(
                 &resource_signer,
                 string::utf8(new_season),
@@ -1765,9 +1767,15 @@ module nft_war::wolf_witch {
                 // we don't allow any mutation to the token
                 token::create_token_mutability_config(mutability_config),
                 // type
-                vector<String>[string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO)],  // property_keys                
-                vector<vector<u8>>[bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_hero)],  // values 
-                vector<String>[string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool")],      // type
+                vector<String>[
+                    string::utf8(BURNABLE_BY_OWNER),string::utf8(TOKEN_PROPERTY_MUTABLE), string::utf8(GAME_STRENGTH), string::utf8(IS_WOLF),string::utf8(IS_HERO), string::utf8(IS_EQUIP)
+                ],  // property_keys                
+                vector<vector<u8>>[
+                    bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
+                ],  // values 
+                vector<String>[
+                    string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"bool")
+                ],      // type
         );        
         
         token::burn(&resource_signer, creator, string::utf8(pre_season), token_name_1, property_version, 1);
