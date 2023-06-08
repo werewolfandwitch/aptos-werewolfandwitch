@@ -4,7 +4,7 @@
 
 
 - Live: [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
-
+- Twitter: [Werewolf and witch](https://twitter.com/AWW_xyz)
 
 ## move functions
 1. init_game  - init for move events / stores
