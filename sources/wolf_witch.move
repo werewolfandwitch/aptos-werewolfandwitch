@@ -85,12 +85,16 @@ module nft_war::wolf_witch {
     const IS_HERO: vector<u8> = b"W_TOKEN_IS_HERO"; 
     const IS_EQUIP:vector<u8> = b"W_TOKEN_IS_EQUIP";
     const POTION_TYPE:vector<u8> = b"W_POTION_TYPE";
-    const WAR_COIN_NAME:vector<u8> = b"War Coin";    
+    // item property
+    const ITEM_LEVEL: vector<u8> = b"W_ITEM_LEVEL";
+    const ITEM_DEFAULT_STR: vector<u8> = b"W_ITEM_DEFAULT_STRENGTH";
+
+
     
-    // collection name
-    
-    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S04"; // lose faction
-    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S05";
+    // collection name // TODO change
+    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S05"; // lose faction
+    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S06";
+
     const LAND_COLLECTION_NAME:vector<u8> = b"LAND TOKEN COLLECTION";    
     const POTION_COLLECTION_NAME:vector<u8> = b"POTION TOKEN COLLECTION";
     // HONOR
@@ -2115,9 +2119,7 @@ module nft_war::wolf_witch {
             fighter_token_name, fighter_collection_name, fighter_creator,
             owner, item_token_name, item_collection_name, item_creator, item_property_version                     
         )                
-    }
-
-    
+    }    
 
     entry fun item_unequip(
         sender: &signer, contract_address:address,
