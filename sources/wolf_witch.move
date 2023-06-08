@@ -2140,6 +2140,7 @@ module nft_war::wolf_witch {
     fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
         let sender_addr = signer::address_of(sender);
         let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1; // 1~100
+        assert!(drop_rate > 100, ENOT_AUTHORIZED);
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender,
