@@ -20,6 +20,7 @@ module nft_war::wolf_witch {
     use aptos_std::type_info;
 
     use item_gen::item_materials;
+    use item_gen::item_equip;
     // use aptos_framework::aptos_coin::AptosCoin;
     
 
@@ -2099,6 +2100,34 @@ module nft_war::wolf_witch {
         //     };
         //     ind = ind + 1;
         // };
+    }
+
+    // item equip / unequip
+
+    entry fun item_equip(
+        sender: &signer, contract_address:address,
+        fighter_token_name: String, fighter_collectin_name:String, fighter_creator:address,
+        owner: address, item_token_name:String, item_collectin_name:String, item_creator:address, item_property_version:u64
+        ) {            
+        item_equip::item_equip(
+            sender, contract_address,
+            fighter_token_name, fighter_collectin_name, fighter_creator,
+            owner, item_token_name, item_collectin_name, item_creator, item_property_version                     
+        )                
+    }
+
+    
+
+    entry fun item_unequip(
+        sender: &signer, contract_address:address,
+        fighter_token_name: String, fighter_collectin_name:String, fighter_creator:address,
+        owner: address, item_token_name:String, item_collectin_name:String, item_creator:address, item_property_version:u64
+        ) { 
+        item_equip::item_unequip(
+            sender, contract_address,
+            fighter_token_name, fighter_collectin_name, fighter_creator,
+            owner, item_token_name, item_collectin_name, item_creator, item_property_version                    
+        )                               
     }
     
 }
