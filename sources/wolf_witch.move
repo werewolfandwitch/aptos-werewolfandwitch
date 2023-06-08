@@ -1810,8 +1810,11 @@ module nft_war::wolf_witch {
         coin::deposit(sender_addr, coins); 
         token::burn(sender, creator, string::utf8(pre_season), name_1, property_version_1, 1);
     }
+    
+    
     // dungeon
     // dungeon_type 1~10
+
     entry fun entering_dungeon<WarCoinType> (
         sender: &signer, game_address:address,
         creator:address, name_1: String, property_version_1: u64, monster_type: u64
@@ -1831,6 +1834,19 @@ module nft_war::wolf_witch {
         let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
         let pm = token::get_property_map(signer::address_of(sender), token_id_1);
         let (_is_wolf_1, token_id_1_str, is_hero) = get_pm_properties(pm);
+        let is_equip = property_map::read_bool(&pm, &string::utf8(IS_EQUIP));
+        // item equip applied
+        if(is_equip) {
+            let item_level = property_map::read_u64(&pm, &string::utf8(ITEM_LEVEL));
+            let default_str = property_map::read_u64(&pm, &string::utf8(ITEM_DEFAULT_STR));
+            if(token_id_1_str > item_level) {
+                token_id_1_str = token_id_1_str + (token_id_1_str / item_level) + default_str;
+            } else {
+                token_id_1_str = token_id_1_str + default_str;
+            }
+        };
+        // let token_id_1_str = property_map::read_u64(&pm, &string::utf8(GAME_STRENGTH));
+        // let is_hero = property_map::read_bool(&pm, &string::utf8(IS_HERO));
         if (token_id_1_str < 50) {
             assert!(monster_type < 3, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type > 0, error::permission_denied(ENOT_AUTHORIZED));
