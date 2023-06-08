@@ -2119,7 +2119,7 @@ module nft_war::wolf_witch {
             assert!(exploration_type == 1, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
             coin::deposit(signer::address_of(&resource_signer), coins);            
-            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let random = utils::random_with_nonce(sender_addr, 100, 1) + 1;
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
@@ -2136,7 +2136,7 @@ module nft_war::wolf_witch {
             assert!(exploration_type == 2, error::permission_denied(ENOT_AUTHORIZED));
             let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 2);        
             coin::deposit(signer::address_of(&resource_signer), coins);
-            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let random = utils::random_with_nonce(sender_addr, 100, 1) + 1;
             let win = if(random < 40) { true } else { false };
             if(win) {
                 if(random < 5) {
@@ -2152,8 +2152,8 @@ module nft_war::wolf_witch {
 
     fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
         let sender_addr = signer::address_of(sender);
-        let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1; // 1~100
-        assert!(drop_rate > 100, ENOT_AUTHORIZED);
+        let random = utils::random_with_nonce(sender_addr, 100, 1) + 1; // 1~100
+        assert!(drop_rate < 100, ENOT_AUTHORIZED);
         if(random <= drop_rate) {
             item_materials::mint_item_material(
                 sender,
