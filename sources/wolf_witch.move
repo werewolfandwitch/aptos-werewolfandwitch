@@ -2077,6 +2077,60 @@ module nft_war::wolf_witch {
         };
     }
 
+    entry fun exploration<WarCoinType> (
+        sender: &signer, game_address:address,
+        creator:address, name_1: String, property_version_1: u64, exploration_type: u64 // 1~2
+    ) acquires WarGame {        
+        let coin_address = coin_address<WarCoinType>();
+        assert!(creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
+        assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
+        let minter = borrow_global<WarGame>(game_address);        
+        assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
+        let resource_signer = get_resource_account_cap(game_address);                
+        // let resource_account_address = signer::address_of(&resource_signer);        
+        let sender_addr = signer::address_of(sender);
+        // let game_events = borrow_global_mut<GameEvents>(game_address);        
+        // entrance fee = 1WAR Coin
+        assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
+        let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
+        let pm = token::get_property_map(signer::address_of(sender), token_id_1);
+        let (_is_wolf_1, token_id_1_str, _is_hero) = get_pm_properties(pm);
+        if (token_id_1_str < 50) {            
+            // entrance fee
+            assert!(exploration_type == 1, error::permission_denied(ENOT_AUTHORIZED));
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
+            coin::deposit(signer::address_of(&resource_signer), coins);            
+            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let win = if(random < 45) { true } else { false };
+            if(win) {
+                if(random < 5) {
+                    item_material_drop(sender, string::utf8(MATERIAL_H), 5);
+                } else {
+                    item_material_drop(sender, string::utf8(MATERIAL_G), 5);
+                };
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, 2 * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);                
+            }
+        };
+        if(token_id_1_str >= 50) {            
+            // entrance fee
+            assert!(exploration_type == 2, error::permission_denied(ENOT_AUTHORIZED));
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 2);        
+            coin::deposit(signer::address_of(&resource_signer), coins);
+            let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1;
+            let win = if(random < 45) { true } else { false };
+            if(win) {
+                if(random < 5) {
+                    item_material_drop(sender, string::utf8(MATERIAL_J), 5);
+                } else {
+                    item_material_drop(sender, string::utf8(MATERIAL_I), 5);
+                };                
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, 4 * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);                
+            }
+        };                
+    }
+
     fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
         let sender_addr = signer::address_of(sender);
         let random = utils::random_with_nonce(sender_addr, 100, timestamp::now_seconds()) + 1; // 1~100
