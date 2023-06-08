@@ -2186,7 +2186,7 @@ module nft_war::wolf_witch {
     entry fun item_equip(
         sender: &signer, game_address:address, contract_address:address,
         fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,fighter_property_version:u64,
-        owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
+        item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
         ) acquires WarGame { 
         
         assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
@@ -2216,14 +2216,14 @@ module nft_war::wolf_witch {
         item_equip::item_equip(
             sender, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
-            owner, item_token_name, item_collection_name, item_creator, item_property_version                     
+            item_token_name, item_collection_name, item_creator, item_property_version                     
         )                
     }    
 
     entry fun item_unequip(
         sender: &signer, game_address:address, contract_address:address,
         fighter_token_name: String, fighter_collection_name:String, fighter_creator:address, fighter_property_version:u64,
-        owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
+        item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
         ) acquires WarGame { 
         assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         let holder_addr = signer::address_of(sender);
@@ -2244,7 +2244,7 @@ module nft_war::wolf_witch {
         item_equip::item_unequip(
             sender, contract_address,
             fighter_token_name, fighter_collection_name, fighter_creator,
-            owner, item_token_name, item_collection_name, item_creator, item_property_version                    
+            item_token_name, item_collection_name, item_creator, item_property_version                    
         )                               
     }
     
