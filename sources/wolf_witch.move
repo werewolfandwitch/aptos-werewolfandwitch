@@ -1839,7 +1839,7 @@ module nft_war::wolf_witch {
         if(is_equip) {
             let item_level = property_map::read_u64(&pm, &string::utf8(ITEM_LEVEL));
             let default_str = property_map::read_u64(&pm, &string::utf8(ITEM_DEFAULT_STR));
-            if(token_id_1_str > item_level) {
+            if(token_id_1_str >= item_level) {
                 token_id_1_str = token_id_1_str + (token_id_1_str / item_level) + default_str;
             } else {
                 token_id_1_str = token_id_1_str + default_str;
