@@ -2106,13 +2106,14 @@ module nft_war::wolf_witch {
 
     entry fun item_equip(
         sender: &signer, contract_address:address,
-        fighter_token_name: String, fighter_collectin_name:String, fighter_creator:address,
-        owner: address, item_token_name:String, item_collectin_name:String, item_creator:address, item_property_version:u64
+        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,
+        owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
         ) {            
+        assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         item_equip::item_equip(
             sender, contract_address,
-            fighter_token_name, fighter_collectin_name, fighter_creator,
-            owner, item_token_name, item_collectin_name, item_creator, item_property_version                     
+            fighter_token_name, fighter_collection_name, fighter_creator,
+            owner, item_token_name, item_collection_name, item_creator, item_property_version                     
         )                
     }
 
@@ -2120,13 +2121,14 @@ module nft_war::wolf_witch {
 
     entry fun item_unequip(
         sender: &signer, contract_address:address,
-        fighter_token_name: String, fighter_collectin_name:String, fighter_creator:address,
-        owner: address, item_token_name:String, item_collectin_name:String, item_creator:address, item_property_version:u64
+        fighter_token_name: String, fighter_collection_name:String, fighter_creator:address,
+        owner: address, item_token_name:String, item_collection_name:String, item_creator:address, item_property_version:u64
         ) { 
+        assert!(fighter_creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         item_equip::item_unequip(
             sender, contract_address,
-            fighter_token_name, fighter_collectin_name, fighter_creator,
-            owner, item_token_name, item_collectin_name, item_creator, item_property_version                    
+            fighter_token_name, fighter_collection_name, fighter_creator,
+            owner, item_token_name, item_collection_name, item_creator, item_property_version                    
         )                               
     }
     
