@@ -1,6 +1,7 @@
 
+## NFT War Game based on move smart contract
+# Aptos hackathon project in Seoul hackathon
 
-# Aptos hackathon project 
 
 - Go To [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
 
@@ -17,9 +18,6 @@
 9. withdraw_prize
 10. mint_token
 11. burn_token_and_enhance
-
-## Trade in here
-- [nodegen.xyz](https://nodegen.xyz)
 
 <br/>
 
