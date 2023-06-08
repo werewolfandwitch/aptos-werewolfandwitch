@@ -18,6 +18,8 @@ module nft_war::wolf_witch {
     use aptos_token::token::{Self, TokenId};    
     use aptos_token::property_map::{Self, PropertyMap};
     use aptos_std::type_info;
+
+    use item_gen::item_materials;
     // use aptos_framework::aptos_coin::AptosCoin;
     
 
@@ -81,8 +83,7 @@ module nft_war::wolf_witch {
     const IS_WOLF: vector<u8> = b"W_TOKEN_IS_WOLF";   
     const IS_HERO: vector<u8> = b"W_TOKEN_IS_HERO"; 
     const POTION_TYPE:vector<u8> = b"W_POTION_TYPE";
-    const WAR_COIN_NAME:vector<u8> = b"War Coin";
-    const WAR_COIN_INFO:vector<u8> = b"0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a::war_coin::WarCoin";
+    const WAR_COIN_NAME:vector<u8> = b"War Coin";    
     
     // collection name
     
@@ -1355,8 +1356,7 @@ module nft_war::wolf_witch {
                     break
                 };
                 i = i + 1;
-            }; 
-                                      
+            };                                       
         }; 
 
         let mutability_config = &vector<bool>[ false, true, true, true, true ];
@@ -1805,7 +1805,7 @@ module nft_war::wolf_witch {
         assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
         let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
         let pm = token::get_property_map(signer::address_of(sender), token_id_1);
-        let (is_wolf_1, token_id_1_str, is_hero) = get_pm_properties(pm);
+        let (_is_wolf_1, token_id_1_str, is_hero) = get_pm_properties(pm);
         if (token_id_1_str < 50) {
             assert!(monster_type < 3, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type > 0, error::permission_denied(ENOT_AUTHORIZED));
@@ -1835,45 +1835,12 @@ module nft_war::wolf_witch {
                     death:false
                 });
             } else {
-                if(!is_hero) {
-                    let death_number = utils::random_with_nonce(resource_account_address, token_id_1_str, token_id_1_str) + 1; 
-                    if(death_number == 1) {
-                        token::burn(sender, creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1, 1);
-                        let game = borrow_global_mut<WarGame>(game_address);
-                        game.total_nft_count = game.total_nft_count - 1;
-                        if(is_wolf_1) { // if enemy is wolf
-                            game.wolf = game.wolf - 1;
-                        } else {
-                            game.witch = game.witch - 1;
-                        };                                                                                
-                        event::emit_event(&mut game_events.game_score_changed_events, GameScoreChangedEvent { 
-                            wolf:game.wolf,
-                            witch:game.witch,
-                            total_prize: game.total_prize,
-                            total_nft_count:game.total_nft_count,
-                        });
-                        event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
-                            win: false,
-                            battle_time:now_second,
-                            earn:0,
-                            death:true
-                        });                         
-                    } else {
-                        event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
-                            win: false,
-                            battle_time:now_second,
-                            earn:0,
-                            death:false
-                        });                
-                    }                    
-                } else {
-                    event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
-                        win: false,
-                        battle_time:now_second,
-                        earn:0,
-                        death:false
-                    });                
-                }                
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: false,
+                    battle_time:now_second,
+                    earn:0,
+                    death:false
+                });                                           
             };            
         };
         if(token_id_1_str < 100 && token_id_1_str >= 50) {
@@ -2075,6 +2042,33 @@ module nft_war::wolf_witch {
             };            
                         
         };
+    }
+
+    fun item_material_drop (sender: &signer, token_name:String, drop_rate:u64) {
+        let sender_addr = signer::address_of(sender);
+        let random = utils::random_with_nonce(sender_addr, 100, 2) + 1; // 1~100
+        if(random <= drop_rate) {
+            item_materials::mint_item_material(
+                sender,
+                token_name                     
+            )
+        };
+        // let items = vector<String>[
+        //     string::utf8(b"Glimmering Crystals"), string::utf8(b"Ethereal Essence"),
+        //     string::utf8(b"Dragon Scale"), string::utf8(b"Celestial Dust"),
+        //     string::utf8(b"Essence of the Ancients"), string::utf8(b"Phoenix Feather"),
+        //     string::utf8(b"Moonstone Ore"), string::utf8(b"Enchanted Wood"),
+        //     string::utf8(b"Kraken Ink"), string::utf8(b"Elemental Essence"),
+        // ];        
+        // let selected_item;        
+        // let ind = 0;
+        // while (ind < vector::length(&items)) {
+        //     let item = *vector::borrow(&items, ind);
+        //     if (token_name == item) {
+        //         selected_item = item;                
+        //     };
+        //     ind = ind + 1;
+        // };
     }
     
 }

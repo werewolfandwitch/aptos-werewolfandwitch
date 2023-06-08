@@ -15,7 +15,7 @@ module nft_war::dungeons {
     const MONSTER_STRENGTH_5:u64 = 300;
     const MONSTER_STRENGTH_6:u64 = 600;
     const MONSTER_STRENGTH_7:u64 = 999;
-    // advance 2, 300lv - 600lv
+    // advance 2, 400lv - 600lv
     const MONSTER_STRENGTH_8:u64 = 400;
     const MONSTER_STRENGTH_9:u64 = 700;
     // advance 3, 700lv~
@@ -156,7 +156,7 @@ module nft_war::dungeons {
       
         result       
     }
-    // Advanced 3 = Strength >= 700
+    // Advanced 3 = Strength >= 600
     public fun advanced_3(str:u64, is_hero:bool,  dungeon_type: u64, resource_account_address:address) : bool {                        
         assert!(str > 600, 1);        
         let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_5) + 1; // 1~1000
