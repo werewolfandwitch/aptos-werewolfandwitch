@@ -231,12 +231,8 @@ module nft_war::wolf_witch {
         earn_prize_events: EventHandle<EarnPrizeEvent>,
         monster_killed_events: EventHandle<MonsterKilledEvent>,
         dungeon_result_events: EventHandle<GameResultDungeonEvent>,
-    }    
-
-    struct CreateGameEvent has drop, store {        
-        minimum_elapsed_time: u64,
-        game_address:address
-    }
+        item_drop_events: EventHandle<ItemDropEvent>,
+    }        
 
     struct FighterChangeEvent has drop, store {
         token_name: String,
@@ -259,11 +255,21 @@ module nft_war::wolf_witch {
         collection_id: CollectionId,
     }        
 
+    struct ItemDropEvent has drop, store {
+        owner: address,
+        item_name: String,
+    }
+
     struct ListingFighter has drop, store {                          
         listing_id: u64,
         owner: address,
         bet:u64        
     }    
+
+    struct CreateGameEvent has drop, store {        
+        minimum_elapsed_time: u64,
+        game_address:address
+    }
 
     struct WarStateEvent has drop,store {
         in_war: bool
@@ -486,6 +492,7 @@ module nft_war::wolf_witch {
                 earn_prize_events: account::new_event_handle<EarnPrizeEvent>(sender),
                 monster_killed_events: account::new_event_handle<MonsterKilledEvent>(sender),
                 dungeon_result_events: account::new_event_handle<GameResultDungeonEvent>(sender),
+                item_drop_events: account::new_event_handle<ItemDropEvent>(sender),
             });
         };        
         
@@ -1818,7 +1825,7 @@ module nft_war::wolf_witch {
     entry fun entering_dungeon<WarCoinType> (
         sender: &signer, game_address:address,
         creator:address, name_1: String, property_version_1: u64, monster_type: u64
-    ) acquires WarGame, MonsterRegenTimer,GameEvents {        
+    ) acquires WarGame, MonsterRegenTimer, GameEvents {        
         let coin_address = coin_address<WarCoinType>();
         assert!(creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
@@ -2181,7 +2188,7 @@ module nft_war::wolf_witch {
         let resource_signer = get_resource_account_cap(game_address);                
         let guid = account::create_guid(&resource_signer);
         let uniq_id = guid::creation_num(&guid);        
-        let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1; // 1~100
+        let random = utils::random_with_nonce(sender_addr, 100, uniq_id) + 1; // 1~100        
         assert!(drop_rate < 100, ENOT_AUTHORIZED);        
         if(random <= drop_rate) {
             item_materials::mint_item_material(
@@ -2189,8 +2196,8 @@ module nft_war::wolf_witch {
                 &resource_signer, // authorized address 
                 @item_gen, // contract address
                 token_name                     
-            )
-        };
+            );            
+        };        
         // let items = vector<String>[
         //     string::utf8(b"Glimmering Crystals"), string::utf8(b"Ethereal Essence"),
         //     string::utf8(b"Dragon Scale"), string::utf8(b"Celestial Dust"),
