@@ -1698,7 +1698,7 @@ module nft_war::wolf_witch {
         assert!(coin_address == @aptos_coin, error::permission_denied(ENOT_AUTHORIZED));        
         assert!(creator == @season_pre_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
         let minter = borrow_global<WarGame>(game_address);        
-        assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
+        // assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
         let token_description = minter.token_description;
         let royalty_points_numerator = minter.token_royalty_points_numerator;            
         let pre_season:vector<u8> = PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION;
