@@ -1780,7 +1780,7 @@ module nft_war::wolf_witch {
                 ],  // property_keys                
                 vector<vector<u8>>[
                     bcs::to_bytes<bool>(&true),bcs::to_bytes<bool>(&true), bcs::to_bytes<u64>(&token_id_1_str), 
-                    bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_equip)
+                    bcs::to_bytes<bool>(&is_wolf_1),bcs::to_bytes<bool>(&is_hero), bcs::to_bytes<bool>(&is_equip)
                 ],  // values 
                 vector<String>[
                     string::utf8(b"bool"),string::utf8(b"bool"), string::utf8(b"u64"), string::utf8(b"bool"), 
