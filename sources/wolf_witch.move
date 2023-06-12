@@ -2130,9 +2130,9 @@ module nft_war::wolf_witch {
             let win = if (random < 50) { true } else { false };
             if(win) {
                 if(random < 5) {
-                    item_material_drop(sender,game_address, string::utf8(MATERIAL_H), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_H), 30);
                 } else {
-                    item_material_drop(sender,game_address, string::utf8(MATERIAL_G), 5);
+                    item_material_drop(sender,game_address, string::utf8(MATERIAL_G), 30);
                 };
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, 2 * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
