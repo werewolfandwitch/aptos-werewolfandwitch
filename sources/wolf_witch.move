@@ -2170,7 +2170,7 @@ module nft_war::wolf_witch {
                 };
                 if(table::contains(&mut personal_regen_timer.timer_1, token_id_1)) {
                     let timer_1_last_killed = table::borrow(&personal_regen_timer.timer_1, token_id_1);                    
-                    assert!(timer_1_last_killed < now_second, ENOT_READY_END);                
+                    assert!(*timer_1_last_killed < now_second, ENOT_READY_END);                
                 };                
                 table::upsert(&mut personal_regen_timer.timer_1, token_id_1, now_second + MINIMUM_REGEN_TIME_B);
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
