@@ -2213,7 +2213,7 @@ module nft_war::wolf_witch {
             // entrance fee
             assert!(monster_type > 2, error::permission_denied(ENOT_AUTHORIZED));
             assert!(monster_type < 5, error::permission_denied(ENOT_AUTHORIZED));
-            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL * 2);        
             coin::deposit(signer::address_of(&resource_signer), coins);                        
             let win = dungeons::personal_intermediate(token_id_1_str, is_hero, monster_type, resource_account_address);            
             if(win) {                
