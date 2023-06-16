@@ -72,6 +72,7 @@ module nft_war::wolf_witch {
     const MINIMUM_REGEN_TIME_B:u64 = 21600; // 4 times every one days. 
     const MINIMUM_REGEN_TIME_C:u64 = 43200; // 4 times every one days. 
     
+    const MINIMUM_ELAPSED_TIME:u64 = 21600; // 4 times every one days. 
 
     const MINIMUM_ELAPSED_TIME_FOR_BATTLE_COIN:u64 = 60; // at least 1min should be passed for stacking coins
 
@@ -1487,8 +1488,9 @@ module nft_war::wolf_witch {
             vector<String>[string::utf8(b"u64"), string::utf8(b"bool")],      // type
         );        
          
-        let game = borrow_global_mut<WarGame>(game_address);
+        let game = borrow_global_mut<WarGame>(game_address);                        
         assert!(game.is_on_game, error::permission_denied(EONGOING_GAME));
+        game.minimum_elapsed_time = game.minimum_elapsed_time + MINIMUM_ELAPSED_TIME;
         game.total_nft_count = game.total_nft_count - 1;
         if(is_wolf_2) { // if enemy is wolf
             game.wolf = game.wolf - 1;
@@ -1499,6 +1501,10 @@ module nft_war::wolf_witch {
         token::burn(holder, creator_addr, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), new_token_name, new_property_version, 1);
         
         let game_events = borrow_global_mut<GameEvents>(game_address);        
+        event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
+            minimum_elapsed_time: game.minimum_elapsed_time + MINIMUM_ELAPSED_TIME,
+            game_address:game_address            
+        });
         event::emit_event(&mut game_events.game_score_changed_events, GameScoreChangedEvent { 
             wolf:game.wolf,
             witch:game.witch,
