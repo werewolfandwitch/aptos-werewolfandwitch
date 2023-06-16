@@ -166,7 +166,9 @@ module nft_war::wolf_witch {
 
     struct PersonalMonsterKilledEvent has drop, store {        
         killer_token_id: token::TokenId,
-        monster_type: u64,        
+        killed_time: u64,
+        killer: address,
+        monster_type: u64,
     }
 
     struct MonsterRegenTimerForPersonal has store, key {                                  
@@ -2172,7 +2174,9 @@ module nft_war::wolf_witch {
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
                 event::emit_event(&mut game_events.monster_killed_personal_events, PersonalMonsterKilledEvent { 
-                    killer_token_id: token_id_1,                    
+                    killer_token_id: token_id_1,  
+                    killed_time: now_second,
+                    killer: sender_addr,                  
                     monster_type: monster_type
                 });
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
@@ -2211,7 +2215,9 @@ module nft_war::wolf_witch {
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
                 event::emit_event(&mut game_events.monster_killed_personal_events, PersonalMonsterKilledEvent { 
-                    killer_token_id: token_id_1,                    
+                    killer_token_id: token_id_1,  
+                    killed_time: now_second,
+                    killer: sender_addr,                  
                     monster_type: monster_type
                 });
                 event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
