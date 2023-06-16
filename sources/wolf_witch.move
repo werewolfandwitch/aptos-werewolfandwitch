@@ -2168,8 +2168,10 @@ module nft_war::wolf_witch {
                 if(monster_type == 2) {
                     prize_war = prize_war + 2;                    
                 };
-                let timer_1_last_killed = table::borrow(&personal_regen_timer.timer_1, token_id_1);
-                assert!(*timer_1_last_killed < now_second, ENOT_READY_END);                
+                if(table::contains(&mut personal_regen_timer.timer_1, token_id_1)) {
+                    let timer_1_last_killed = table::borrow(&personal_regen_timer.timer_1, token_id_1);
+                    assert!(*timer_1_last_killed < now_second, ENOT_READY_END);                
+                };                
                 table::upsert(&mut personal_regen_timer.timer_1, token_id_1, timestamp::now_seconds() + MINIMUM_REGEN_TIME_B);
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
@@ -2209,8 +2211,10 @@ module nft_war::wolf_witch {
                 if(monster_type == 4) {
                     prize_war = prize_war + 5;                    
                 };
-                let timer_2_last_killed = table::borrow(&personal_regen_timer.timer_2, token_id_1);
-                assert!(*timer_2_last_killed < now_second, ENOT_READY_END);                
+                if(table::contains(&mut personal_regen_timer.timer_2, token_id_1)) {
+                    let timer_2_last_killed = table::borrow(&personal_regen_timer.timer_2, token_id_1);
+                    assert!(*timer_2_last_killed < now_second, ENOT_READY_END);         
+                };       
                 table::upsert(&mut personal_regen_timer.timer_2, token_id_1, timestamp::now_seconds() + MINIMUM_REGEN_TIME_C);
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
