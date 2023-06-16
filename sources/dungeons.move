@@ -183,8 +183,64 @@ module nft_war::dungeons {
             win_rate = if (fight_str > MONSTER_STRENGTH_11) { 500 + diff_multi } else { 500 - diff_multi };             
             result = if(random <= win_rate) { true } else { false };            
         };
-
         result       
-    }     
-       
+    }
+    // token_id_1_str > 50 && token_id_1_str <= 100
+    public fun personal_beginner(str:u64, is_hero:bool,dungeon_type: u64, resource_account_address:address): bool {                        
+        let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_1) + 1; // 1~1000
+        let fight_str = if (is_hero) { str + 5 } else { str };
+        let diff;        
+        let win_rate;
+        let result = false;
+        if(dungeon_type == 1) {
+            diff = if (fight_str > MONSTER_STRENGTH_1) { fight_str - MONSTER_STRENGTH_1 } else { MONSTER_STRENGTH_1 - fight_str };
+            let diff_multi = diff * 10;
+            if(diff_multi > 450) {
+                diff_multi = 450;
+            };
+            win_rate = if (fight_str > MONSTER_STRENGTH_1) { 500 + diff_multi } else { 500 - diff_multi };             
+            result = if(random <= win_rate) { true } else { false };            
+        };
+
+        if(dungeon_type == 2) {
+            diff = if (fight_str > MONSTER_STRENGTH_2) { fight_str - MONSTER_STRENGTH_2 } else { MONSTER_STRENGTH_2 - fight_str };
+            let diff_multi = diff * 10;
+            if(diff_multi > 450) {
+                diff_multi = 450;
+            };
+            win_rate = if (fight_str > MONSTER_STRENGTH_2) { 500 + diff_multi } else { 500 - diff_multi };             
+            result = if(random <= win_rate) { true } else { false };            
+        };
+        result     
+    }    
+
+    // Intermediate Strength 50 ~ 100
+
+    public fun personal_intermediate(str:u64, is_hero:bool, dungeon_type: u64, resource_account_address:address) : bool {                        
+       let random = utils::random_with_nonce(resource_account_address, 1000, MONSTER_STRENGTH_3) + 1; // 1~1000
+        let fight_str = if (is_hero) { str + 15 } else { str };        
+        let diff;        
+        let win_rate;
+        let result = false;
+        if(dungeon_type == 3) {
+            diff = if (fight_str > MONSTER_STRENGTH_3) { fight_str - MONSTER_STRENGTH_3 } else { MONSTER_STRENGTH_3 - fight_str };
+            let diff_multi = diff * 5;
+            if(diff_multi > 450) {
+                diff_multi = 450;
+            };
+            win_rate = if (fight_str > MONSTER_STRENGTH_3) { 500 + diff_multi } else { 500 - diff_multi };             
+            result = if(random <= win_rate) { true } else { false };            
+        };
+
+        if(dungeon_type == 4) {
+            diff = if (fight_str > MONSTER_STRENGTH_4) { fight_str - MONSTER_STRENGTH_4 } else { MONSTER_STRENGTH_4 - fight_str };
+            let diff_multi = diff * 5;
+            if(diff_multi > 450) {
+                diff_multi = 450;
+            };
+            win_rate = if (fight_str > MONSTER_STRENGTH_4) { 500 + diff_multi } else { 500 - diff_multi };             
+            result = if(random <= win_rate) { true } else { false };            
+        };
+        result         
+    }            
 }

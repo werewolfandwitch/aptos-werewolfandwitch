@@ -51,6 +51,7 @@ module nft_war::wolf_witch {
     const ENO_SUFFICIENT_FUND:u64 = 18;
     const ENOT_ENOUGH_MONEY: u64 = 19;
     const ENOT_AUTHORIZED_CREATOR:u64 = 20;
+    const ESHOULD_BE_UNEQUIP:u64 = 21;
     
     
 
@@ -68,10 +69,9 @@ module nft_war::wolf_witch {
 
     // monster regen time
     const MINIMUM_REGEN_TIME_A:u64 = 10800; // 8 time in one day
-    const MINIMUM_REGEN_TIME_B:u64 = 10800; // 8 time every one day
-    const MINIMUM_REGEN_TIME_C:u64 = 10800; // 8 times every one days. 
-    const MINIMUM_REGEN_TIME_D:u64 = 21600; // 4 times every one days. 
-    const MINIMUM_REGEN_TIME_E:u64 = 21600; // 4 times every one days. 
+    const MINIMUM_REGEN_TIME_B:u64 = 21600; // 4 times every one days. 
+    const MINIMUM_REGEN_TIME_C:u64 = 43200; // 4 times every one days. 
+    
 
     const MINIMUM_ELAPSED_TIME_FOR_BATTLE_COIN:u64 = 60; // at least 1min should be passed for stacking coins
 
@@ -163,6 +163,16 @@ module nft_war::wolf_witch {
         killer: address,
         monster_type: u64
     }
+
+    struct PersonalMonsterKilledEvent has drop, store {        
+        killer_token_id: token::TokenId,
+        monster_type: u64,        
+    }
+
+    struct MonsterRegenTimerForPersonal has store, key {                                  
+        timer_1: Table<token::TokenId, u64>,
+        timer_2: Table<token::TokenId, u64>,
+    }
     
     struct BatteArena has key {
         listings: Table<token::TokenId, ListingFighter>
@@ -230,6 +240,7 @@ module nft_war::wolf_witch {
         item_stock_events: EventHandle<ItemStockChangeEvent>,
         earn_prize_events: EventHandle<EarnPrizeEvent>,
         monster_killed_events: EventHandle<MonsterKilledEvent>,
+        monster_killed_personal_events: EventHandle<PersonalMonsterKilledEvent>,
         dungeon_result_events: EventHandle<GameResultDungeonEvent>,
         item_drop_events: EventHandle<ItemDropEvent>,
     }        
@@ -491,6 +502,7 @@ module nft_war::wolf_witch {
                 item_stock_events: account::new_event_handle<ItemStockChangeEvent>(sender),
                 earn_prize_events: account::new_event_handle<EarnPrizeEvent>(sender),
                 monster_killed_events: account::new_event_handle<MonsterKilledEvent>(sender),
+                monster_killed_personal_events: account::new_event_handle<PersonalMonsterKilledEvent>(sender),                
                 dungeon_result_events: account::new_event_handle<GameResultDungeonEvent>(sender),
                 item_drop_events: account::new_event_handle<ItemDropEvent>(sender),
             });
@@ -513,14 +525,21 @@ module nft_war::wolf_witch {
                 stakings: table::new()
             });
         };
+
+        if(!exists<MonsterRegenTimerForPersonal>(sender_addr)){
+            move_to(sender, MonsterRegenTimerForPersonal {
+                timer_1: table::new(),
+                timer_2: table::new(),
+            });
+        };
         
         if(!exists<MonsterRegenTimer>(sender_addr)){
             move_to(sender, MonsterRegenTimer{
                 last_killed_time_type_1:timestamp::now_seconds() - MINIMUM_REGEN_TIME_A,
-                last_killed_time_type_2:timestamp::now_seconds() - MINIMUM_REGEN_TIME_B,
-                last_killed_time_type_3:timestamp::now_seconds() - MINIMUM_REGEN_TIME_C,                
-                last_killed_time_type_4:timestamp::now_seconds() - MINIMUM_REGEN_TIME_D,                
-                last_killed_time_type_5:timestamp::now_seconds() - MINIMUM_REGEN_TIME_E,                
+                last_killed_time_type_2:timestamp::now_seconds() - MINIMUM_REGEN_TIME_A,
+                last_killed_time_type_3:timestamp::now_seconds() - MINIMUM_REGEN_TIME_A,                
+                last_killed_time_type_4:timestamp::now_seconds() - MINIMUM_REGEN_TIME_B,                
+                last_killed_time_type_5:timestamp::now_seconds() - MINIMUM_REGEN_TIME_C,                
             });
         };        
             
@@ -1717,7 +1736,8 @@ module nft_war::wolf_witch {
         let is_wolf_1 = property_map::read_bool(&pm, &string::utf8(IS_WOLF));
         let token_id_1_str = property_map::read_u64(&pm, &string::utf8(GAME_STRENGTH));
         let is_hero = property_map::read_bool(&pm, &string::utf8(IS_HERO));
-        let is_equip = false; // SHOULD BE CHANGED IN NEXT SEASON
+        let is_equip =property_map::read_bool(&pm, &string::utf8(IS_EQUIP));
+        assert!(!is_equip, error::permission_denied(ESHOULD_BE_UNEQUIP));
         let supply_count = &mut token::get_collection_supply(resource_account_address, string::utf8(WEREWOLF_AND_WITCH_COLLECTION));        
         let new_supply = option::extract<u64>(supply_count);
         let count_string = utils::to_string((new_supply as u128));
@@ -2034,7 +2054,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 9) {
                     prize_war = prize_war + 6;                    
                 };                
-                regen_timer.last_killed_time_type_4 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_D;                
+                regen_timer.last_killed_time_type_4 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_B;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
                 event::emit_event(&mut game_events.monster_killed_events, MonsterKilledEvent { 
@@ -2075,7 +2095,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 11) {
                     prize_war = prize_war + 5;                    
                 };                
-                regen_timer.last_killed_time_type_5 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_E;                
+                regen_timer.last_killed_time_type_5 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_C;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
                 event::emit_event(&mut game_events.monster_killed_events, MonsterKilledEvent { 
@@ -2098,9 +2118,120 @@ module nft_war::wolf_witch {
                     death:false
                 });
                 item_material_drop(sender,game_address,string::utf8(MATERIAL_F), 30);
-            };            
-                        
+            };                                    
         };
+    }
+
+    entry fun entering_personal_dungeon<WarCoinType> (
+        sender: &signer, game_address:address,
+        creator:address, name_1: String, property_version_1: u64, monster_type: u64
+    ) acquires WarGame, MonsterRegenTimerForPersonal, GameEvents {        
+        let coin_address = coin_address<WarCoinType>();
+        assert!(creator == @season_now_creator, error::permission_denied(ENOT_AUTHORIZED_CREATOR));
+        assert!(coin_address == @war_coin, error::permission_denied(ENOT_AUTHORIZED));        
+        let minter = borrow_global<WarGame>(game_address);        
+        assert!(minter.is_on_game, error::permission_denied(EONGOING_GAME));                
+        let resource_signer = get_resource_account_cap(game_address);                
+        let resource_account_address = signer::address_of(&resource_signer);        
+        let sender_addr = signer::address_of(sender);
+        let game_events = borrow_global_mut<GameEvents>(game_address);
+        let now_second = timestamp::now_seconds();
+        // entrance fee = 1WAR Coin
+        assert!(coin::balance<WarCoinType>(sender_addr) >= WAR_COIN_DECIMAL, error::invalid_argument(ENO_SUFFICIENT_FUND));
+        let token_id_1 = token::create_token_id_raw(creator, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), name_1, property_version_1);            
+        let pm = token::get_property_map(signer::address_of(sender), token_id_1);
+        let (_is_wolf_1, token_id_1_str, is_hero) = get_pm_properties(pm);
+        let is_equip = property_map::read_bool(&pm, &string::utf8(IS_EQUIP));
+        // item equip applied
+        if(is_equip) {
+            let item_level = property_map::read_u64(&pm, &string::utf8(ITEM_LEVEL));
+            let default_str = property_map::read_u64(&pm, &string::utf8(ITEM_DEFAULT_STR));
+            if(token_id_1_str >= item_level) {
+                token_id_1_str = token_id_1_str + (token_id_1_str / item_level) + default_str;
+            } else {
+                token_id_1_str = token_id_1_str + default_str;
+            }
+        };        
+        let personal_regen_timer = borrow_global_mut<MonsterRegenTimerForPersonal>(game_address);
+        if (token_id_1_str > 50 && token_id_1_str <= 100) {
+            assert!(monster_type < 3, error::permission_denied(ENOT_AUTHORIZED));
+            assert!(monster_type > 0, error::permission_denied(ENOT_AUTHORIZED));
+            // entrance fee
+            
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
+            coin::deposit(signer::address_of(&resource_signer), coins);            
+            let win = dungeons::personal_beginner(token_id_1_str, is_hero, monster_type, resource_account_address);            
+            if(win) {                
+                let prize_war = utils::random_with_nonce(resource_account_address, 8, token_id_1_str) + 1; // 1~15
+                if(monster_type == 2) {
+                    prize_war = prize_war + 2;                    
+                };
+                let timer_1_last_killed = table::borrow(&personal_regen_timer.timer_1, token_id_1);
+                assert!(*timer_1_last_killed < now_second, ENOT_READY_END);                
+                table::upsert(&mut personal_regen_timer.timer_1, token_id_1, timestamp::now_seconds() + MINIMUM_REGEN_TIME_B);
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);
+                event::emit_event(&mut game_events.monster_killed_personal_events, PersonalMonsterKilledEvent { 
+                    killer_token_id: token_id_1,                    
+                    monster_type: monster_type
+                });
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: true,
+                    battle_time:now_second,
+                    earn: prize_war * WAR_COIN_DECIMAL,
+                    death:false
+                });
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_B), 30);
+            } else {
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: false,
+                    battle_time:now_second,
+                    earn:0,
+                    death:false
+                });            
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_D), 30);
+            };            
+        }; 
+
+        if (token_id_1_str >= 100) {            
+            // entrance fee
+            assert!(monster_type > 2, error::permission_denied(ENOT_AUTHORIZED));
+            assert!(monster_type < 5, error::permission_denied(ENOT_AUTHORIZED));
+            let coins = coin::withdraw<WarCoinType>(sender, WAR_COIN_DECIMAL);        
+            coin::deposit(signer::address_of(&resource_signer), coins);                        
+            let win = dungeons::personal_intermediate(token_id_1_str, is_hero, monster_type, resource_account_address);            
+            if(win) {                
+                let prize_war = utils::random_with_nonce(resource_account_address, 10, token_id_1_str) + 1; // 1~15
+                if(monster_type == 4) {
+                    prize_war = prize_war + 5;                    
+                };
+                let timer_2_last_killed = table::borrow(&personal_regen_timer.timer_2, token_id_1);
+                assert!(*timer_2_last_killed < now_second, ENOT_READY_END);                
+                table::upsert(&mut personal_regen_timer.timer_2, token_id_1, timestamp::now_seconds() + MINIMUM_REGEN_TIME_C);
+                let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
+                coin::deposit(sender_addr, coins);
+                event::emit_event(&mut game_events.monster_killed_personal_events, PersonalMonsterKilledEvent { 
+                    killer_token_id: token_id_1,                    
+                    monster_type: monster_type
+                });
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: true,
+                    battle_time:now_second,
+                    earn: prize_war * WAR_COIN_DECIMAL,
+                    death:false
+                });
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_A), 20);
+            } else {
+                event::emit_event(&mut game_events.dungeon_result_events, GameResultDungeonEvent {            
+                    win: false,
+                    battle_time:now_second,
+                    earn:0,
+                    death:false
+                });            
+                item_material_drop(sender, game_address, string::utf8(MATERIAL_H), 30);
+            };            
+        };      
+       
     }
 
     entry fun exploration<WarCoinType> (
@@ -2182,6 +2313,8 @@ module nft_war::wolf_witch {
             }
         };                
     }
+
+    
 
     fun item_material_drop (sender: &signer, game_address:address, token_name:String, drop_rate:u64) acquires WarGame {
         let sender_addr = signer::address_of(sender);
