@@ -1285,7 +1285,7 @@ module nft_war::wolf_witch {
         let nft_count = game.total_nft_count;
         // at least 10 nfts required to be end        
         assert!(nft_count > 10, error::permission_denied(ENOT_ENOUGH_NFT));
-        assert!(minimum_elapsed_time < timestamp::now_seconds() , error::permission_denied(ENOT_READY_END));        
+        // assert!(minimum_elapsed_time < timestamp::now_seconds() , error::permission_denied(ENOT_READY_END));        
         let minimum_alive = (nft_count / 10) * RATIO_FOR_WIN;        
         let bigger = if (game.wolf > game.witch) { game.wolf } else { game.witch };
         let is_game_over = if(bigger > minimum_alive) { true } else { false };        
@@ -1502,9 +1502,9 @@ module nft_war::wolf_witch {
         
         let game_events = borrow_global_mut<GameEvents>(game_address);        
         if(game.minimum_elapsed_time > timestamp::now_seconds()) {
-            game.minimum_elapsed_time = game.minimum_elapsed_time + MINIMUM_ELAPSED_TIME;
+            game.minimum_elapsed_time = timestamp::now_seconds() + MINIMUM_ELAPSED_TIME;
             event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
-                minimum_elapsed_time: game.minimum_elapsed_time + MINIMUM_ELAPSED_TIME,
+                minimum_elapsed_time: timestamp::now_seconds() + MINIMUM_ELAPSED_TIME,
                 game_address:game_address            
             });
         };
