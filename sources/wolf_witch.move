@@ -1737,17 +1737,19 @@ module nft_war::wolf_witch {
         // resources 
         let resource_signer = get_resource_account_cap(game_address);         
         let resource_account_address = signer::address_of(&resource_signer);        
-        let coins = coin::withdraw<CoinType>(receiver, PRICE_FOR_NFT);                        
-        coin::deposit(resource_account_address, coins);
         let token_id_1 = token::create_token_id_raw(creator, string::utf8(pre_season), token_name_1, property_version); // origin
         let token_data_id_1 = token::create_token_data_id(creator,string::utf8(pre_season),token_name_1);        
         let token = token::withdraw_token(receiver, token_id_1, 1);
         token::deposit_token(&resource_signer, token);
 
-        let pm = token::get_property_map(resource_account_address, token_id_1);                
-        let is_wolf_1 = property_map::read_bool(&pm, &string::utf8(IS_WOLF));
-        let token_id_1_str = property_map::read_u64(&pm, &string::utf8(GAME_STRENGTH));
+        let pm = token::get_property_map(resource_account_address, token_id_1);
         let is_hero = property_map::read_bool(&pm, &string::utf8(IS_HERO));
+        if(!is_hero) {
+            let coins = coin::withdraw<CoinType>(receiver, PRICE_FOR_NFT);                        
+            coin::deposit(resource_account_address, coins);
+        };                                
+        let is_wolf_1 = property_map::read_bool(&pm, &string::utf8(IS_WOLF));
+        let token_id_1_str = property_map::read_u64(&pm, &string::utf8(GAME_STRENGTH));        
         let is_equip =property_map::read_bool(&pm, &string::utf8(IS_EQUIP));
         assert!(!is_equip, error::permission_denied(ESHOULD_BE_UNEQUIP));
         let supply_count = &mut token::get_collection_supply(resource_account_address, string::utf8(WEREWOLF_AND_WITCH_COLLECTION));        
@@ -1767,12 +1769,10 @@ module nft_war::wolf_witch {
             let token_name_new = string::utf8(WEREWOLF_AND_WITCH_COLLECTION);
             let collection_max_count = new_supply;
             while (i < collection_max_count + 1) {
-                let new_token_name = token_name_new;
-                
+                let new_token_name = token_name_new;                
                 string::append_utf8(&mut new_token_name, b" #");
                 let count_string = utils::to_string((i as u128));
-                string::append(&mut new_token_name, count_string);                            
-                
+                string::append(&mut new_token_name, count_string);
                 if(!token::check_tokendata_exists(resource_account_address, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), new_token_name)) {
                     token_name = new_token_name;
                     let new_uri = if (is_wolf_1) { string::utf8(WEREWOLF_JSON_URL) } else { string::utf8(WITCH_JSON_URL) };                            
