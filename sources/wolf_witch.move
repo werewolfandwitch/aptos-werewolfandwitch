@@ -1500,7 +1500,7 @@ module nft_war::wolf_witch {
         let (creator_addr,_,new_token_name, new_property_version) = token::get_token_id_fields(&new_token_id_2);
         token::burn(holder, creator_addr, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), new_token_name, new_property_version, 1);
         
-        // let game_events = borrow_global_mut<GameEvents>(game_address);        
+        let game_events = borrow_global_mut<GameEvents>(game_address);        
         // if(game.minimum_elapsed_time > timestamp::now_seconds()) {
         //     game.minimum_elapsed_time = timestamp::now_seconds() + MINIMUM_ELAPSED_TIME;
         //     event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
