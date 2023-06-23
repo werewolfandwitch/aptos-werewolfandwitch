@@ -91,8 +91,8 @@ module nft_war::wolf_witch {
     const ITEM_DEFAULT_STR: vector<u8> = b"W_ITEM_DEFAULT_STRENGTH";
     
     // collection name // TODO change
-    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S06"; // lose faction
-    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S07";
+    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S07"; // lose faction
+    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S08";
     
     const LAND_COLLECTION_NAME:vector<u8> = b"LAND TOKEN COLLECTION";    
     const POTION_COLLECTION_NAME:vector<u8> = b"POTION TOKEN COLLECTION";
@@ -1941,7 +1941,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 4) {
                     prize_war = prize_war + 10;
                 };
-                regen_timer.last_killed_time_type_2 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_B;
+                regen_timer.last_killed_time_type_2 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_A;
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
                 if(prize_war < 3) {                    
@@ -1990,7 +1990,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 7) {
                     prize_war = prize_war + 10;                    
                 };
-                regen_timer.last_killed_time_type_3 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_C;                
+                regen_timer.last_killed_time_type_3 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_A;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
                 if(monster_type == 7) // honored dradon slayer 
