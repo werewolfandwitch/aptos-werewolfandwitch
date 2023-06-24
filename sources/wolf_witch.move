@@ -91,8 +91,8 @@ module nft_war::wolf_witch {
     const ITEM_DEFAULT_STR: vector<u8> = b"W_ITEM_DEFAULT_STRENGTH";
     
     // collection name // TODO change
-    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S07"; // lose faction
-    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S08";
+    const PRE_SEASON_WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S06"; // lose faction
+    const WEREWOLF_AND_WITCH_COLLECTION:vector<u8> =b"WEREWOLF AND WITCH #S07";
     
     const LAND_COLLECTION_NAME:vector<u8> = b"LAND TOKEN COLLECTION";    
     const POTION_COLLECTION_NAME:vector<u8> = b"POTION TOKEN COLLECTION";
@@ -1285,7 +1285,7 @@ module nft_war::wolf_witch {
         let nft_count = game.total_nft_count;
         // at least 10 nfts required to be end        
         assert!(nft_count > 10, error::permission_denied(ENOT_ENOUGH_NFT));
-        // assert!(minimum_elapsed_time < timestamp::now_seconds() , error::permission_denied(ENOT_READY_END));        
+        assert!(minimum_elapsed_time < timestamp::now_seconds() , error::permission_denied(ENOT_READY_END));        
         let minimum_alive = (nft_count / 10) * RATIO_FOR_WIN;        
         let bigger = if (game.wolf > game.witch) { game.wolf } else { game.witch };
         let is_game_over = if(bigger > minimum_alive) { true } else { false };        
@@ -1500,7 +1500,7 @@ module nft_war::wolf_witch {
         let (creator_addr,_,new_token_name, new_property_version) = token::get_token_id_fields(&new_token_id_2);
         token::burn(holder, creator_addr, string::utf8(WEREWOLF_AND_WITCH_COLLECTION), new_token_name, new_property_version, 1);
         
-        // let game_events = borrow_global_mut<GameEvents>(game_address);        
+        let game_events = borrow_global_mut<GameEvents>(game_address);        
         // if(game.minimum_elapsed_time > timestamp::now_seconds()) {
         //     game.minimum_elapsed_time = timestamp::now_seconds() + MINIMUM_ELAPSED_TIME;
         //     event::emit_event(&mut game_events.create_game_event, CreateGameEvent { 
@@ -1941,7 +1941,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 4) {
                     prize_war = prize_war + 10;
                 };
-                regen_timer.last_killed_time_type_2 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_A;
+                regen_timer.last_killed_time_type_2 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_B;
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);                
                 if(prize_war < 3) {                    
@@ -1990,7 +1990,7 @@ module nft_war::wolf_witch {
                 if(monster_type == 7) {
                     prize_war = prize_war + 10;                    
                 };
-                regen_timer.last_killed_time_type_3 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_A;                
+                regen_timer.last_killed_time_type_3 = timestamp::now_seconds() + MINIMUM_REGEN_TIME_C;                
                 let coins = coin::withdraw<WarCoinType>(&resource_signer, prize_war * WAR_COIN_DECIMAL);                
                 coin::deposit(sender_addr, coins);
                 if(monster_type == 7) // honored dradon slayer 
