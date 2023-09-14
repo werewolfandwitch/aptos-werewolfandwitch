@@ -5,7 +5,7 @@
 - Live: [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
 - Twitter: [Werewolf and witch](https://twitter.com/AWW_xyz)
 
-## move functions
+## Move functions
 1. init_game  - init for move events / stores
 2. create_game - set up games 
 3. admin_withdraw - add more prize for fun
