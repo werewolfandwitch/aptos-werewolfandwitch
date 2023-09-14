@@ -2,7 +2,6 @@
 # NFT War Game based on move smart contract
 ## Aptos hackathon project in Seoul hackathon
 
-
 - Live: [werewolfandwitch.xyz](https://werewolfandwitch.xyz/)
 - Twitter: [Werewolf and witch](https://twitter.com/AWW_xyz)
 
@@ -19,7 +18,18 @@
 10. mint_token
 11. burn_token_and_enhance
 
-<br/>
+## Cloning the repository
+```git clone https://github.com/werewolfandwitch/aptos-werewolfandwitch.git```
+
+## Initialize
+Initialize with ```aptos init``` in the ```aptos-werewolfandwitch``` folder you just cloned
+
+## Compile
+```aptos move compile --named-addresses nft_war=default```
+
+## Publish
+```aptos move publish --named-addresses nft_war=default```
+
 
 License
 =======
